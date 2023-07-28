@@ -23,7 +23,7 @@ export default function UpdateSearchDropdown ({ instrumentName, id }) {
           stock.instrumentName
             .toLowerCase()
             .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, ""))
+            .startsWith(query.toLowerCase().replace(/\s+/g, ""))
         )
     
   useEffect(() => {

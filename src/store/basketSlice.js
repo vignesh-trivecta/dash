@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 // initial state values
 const initialState = {
   basketName: '',
-  basketAmount: null,
+  basketAmount: 0,
+  basketValue: 0,
 };
 
 // creating a new slice
@@ -17,9 +18,12 @@ const basketSlice = createSlice({
     setBasketAmount: (state, action) => {
       state.basketAmount = action.payload;
     },
+    setBasketValue: (state, action) => {
+      state.basketAmount = action.payload;
+    },
   },
 });
 
-export const { setBasketName, setBasketAmount } = basketSlice.actions;
+export const { setBasketName, setBasketAmount, setBasketValue } = basketSlice.actions;
 
 export default basketSlice.reducer;

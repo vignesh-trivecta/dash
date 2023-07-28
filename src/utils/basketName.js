@@ -18,13 +18,17 @@ const BasketName = ({autoFocus}) => {
 
   const handleChange = async (e) => {
     const inputValue = e.target.value;
-    let response = await basketNameCheck(e.target.value);
+    console.log(inputValue)
+    let response = await basketNameCheck(inputValue);
+    console.log(response)
     if(response){
+      console.log('ok');
       setInputValue(inputValue);
       dispatch(setBasketName(inputValue));
       setStatus(false);
     }
     else{
+      console.log('not ok')
       setStatus(true);
     }
   };

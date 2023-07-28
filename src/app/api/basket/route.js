@@ -177,11 +177,12 @@ export const basketNameCheck = async (basketName) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "basketName": basketName
+                "basketName": basketName,
             })
         }
         const response = await fetch("http://localhost:8083/basket/namecheck", requestOptions);
         if(response.ok){
+            console.log(basketName)
             return true;
         }
         else{

@@ -44,6 +44,10 @@ const CreateBasket = () => {
   fetchData();
   }, [handleFetch]);
 
+  // comparison to check whether basketVal is greater than investmentVal
+  const [comparison, setComparison] = useState(true);
+  
+  const investmentVal = segregate(basketAmount);   // formatting input amount
   
   // getting basket total value
   const [total, setTotal] = useState(0);
@@ -54,11 +58,21 @@ const CreateBasket = () => {
       total += (record.priceValue * record.quantityValue);
     })
     setTotal(total);
-  }, [records]);
 
-  const formattedValue = segregate(basketAmount);   // formatting input amount
+
+    if(total > basketAmount){
+      setComparison(false);
+      console.log('hide')
+    }
+    else{
+      setComparison(true);
+      console.log('visible')
+    }
+  }, [records]);
+  
+  
   const isTableEmpty = !records || records.length === 0; // checking if table is empty
-  const segregatedTotal = segregate(total);
+  const basketVal = segregate(total);
 
   return (
     <div className='container mx-auto my-8' style={{width: '90%'}}>
@@ -80,13 +94,11 @@ const CreateBasket = () => {
         </div>
         <div className="flex items-center">
           <p className="text-black text-sm dark:text-white mr-2">Investment</p>
-          <span className="border border-gray-200 rounded-lg px-2 py-1 h-10 w-44">
-            {formattedValue}
-          </span>
+          <input disabled type="text" value={investmentVal} className="border border-gray-200 rounded-lg w-44" />
         </div>
         <div className="flex items-center">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value</p>
-          <input disabled type="text" value={segregatedTotal} className="border border-gray-200 rounded-lg w-44" />
+          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44" />
         </div>
       </div>  
           
@@ -94,21 +106,21 @@ const CreateBasket = () => {
       {/* Table showing Create Basket Records */}
       <div className='flex'>
         <div className={isTableEmpty ? '' : 'overflow-y-scroll'}  style={{ maxHeight: '300px' }}>
-          <table className="overflow-y-scroll w-full shadow-md sm:rounded-lg text-sm text-left text-gray-900 dark:text-gray-400">
-            <thead className="sticky top-0 border text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr className=''>
-                <th  scope="col" className="px-6 py-3">S.No</th>
-                <th  scope="col" className="px-6 py-3">Stock</th>
-                <th  scope="col" className="px-6 py-3">Exchange</th>
-                <th  scope="col" className="px-6 py-3">Transaction</th>
-                <th  scope="col" className="px-6 py-3">Weights&nbsp;%</th>
-                <th  scope="col" className="px-6 py-3">Price &#8377;</th>
-                <th  scope="col" className="px-6 py-3">Quantity</th>
-                <th  scope="col" className="px-6 py-3">Actions</th>
+          <table className='table-fixed w-full border' >
+            <thead className='sticky top-0 border bg-gray-50' >
+              <tr>
+                <th className='font-medium text-sm p-2'>S.No</th>
+                <th className='font-medium text-sm' style={{width: '25%'}}>Stock</th>
+                <th className='font-medium text-sm'>Exchange</th>
+                <th className='font-medium text-sm'>Transaction</th>
+                <th className='text-right font-medium text-sm'>Weights&nbsp;%</th>
+                <th className='text-right font-medium text-sm'>Price &#8377;</th>
+                <th className='text-right font-medium text-sm'>Quantity</th>
+                <th className='font-medium text-sm'>Actions</th>
               </tr>
             </thead>
             { 
-              <tbody className='bg-white overflow-y-scroll'>
+              <tbody>
 
                 {/* Component for showing table records */}
                 {records && records.length > 0 ? (records.map((record, index) => (
@@ -132,7 +144,12 @@ const CreateBasket = () => {
       <div className='flex justify-end items-center mt-4'>
 
         {/* Add Record Component */}
-        <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
+        { comparison 
+          ? <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
+          : <>
+              <Button disabled className=''>Add Record</Button>
+            </>
+        }
 
         {/* Submit Basket Button */}
         <SubmitBasket />
