@@ -19,13 +19,13 @@ const BasketName = ({autoFocus}) => {
   const handleChange = async (e) => {
     const inputValue = e.target.value;
     let response = await basketNameCheck(e.target.value);
-    if(!response){
+    if(response){
       setInputValue(inputValue);
       dispatch(setBasketName(inputValue));
-      setStatus(true);
+      setStatus(false);
     }
     else{
-      setStatus(false);
+      setStatus(true);
     }
   };
 
@@ -33,7 +33,7 @@ const BasketName = ({autoFocus}) => {
     <div className=''>
       <input
         type='text'
-        className='w-32 rounded-md border-gray-300'
+        className='sm:w-16 md:w-32 rounded-md border-gray-300'
         onChange={handleChange}
         autoFocus={true}
         ref={inputRef}

@@ -4,14 +4,8 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { Label } from 'flowbite-react'
 
 const people = [
-  { name: '5 minutes' },
-  { name: '10 minutes' },
-  { name: '15 minutes' },
-  { name: '30 minutes' },
-  { name: '60 minutes' },
-  { name: '90 minutes' },
-  { name: '120 minutes' },
   { name: '1 day' },
+  { name: '2 day' },
 ]
 
 export default function ValiditySelector({ text }) {
@@ -37,7 +31,7 @@ export default function ValiditySelector({ text }) {
             leaveTo="opacity-0"
           >
             <Listbox.Options 
-            style={{height: '150px'}}
+            style={{height: '80px'}}
             className="absolute mt-1 max-h-32 w-72 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-xs">
               {people.map((person, personIdx) => (
                 <Listbox.Option

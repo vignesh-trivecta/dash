@@ -16,19 +16,11 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     const [openModal, setOpenModal] = useState(false);
     const props = { openModal, setOpenModal };
     
-    // local state variables
-    let [localPrice, setLocalPrice] = useState(price);
-    let [localExchange, setLocalExchange] = useState(exchange);
-    let [localOrderType, setLocalOrderType] = useState(orderType);
-    let [localQuantity, setLocalQuantity] = useState(quantity);
-    let [localStock, setLocalStock] = useState(instrumentName);
-    const [toggle, setToggle] = useState(transType);
-    // let [localTransType, setLocalTransType] = useState(transType);
-
-    const dispatch = useDispatch();
+    
     
     
     // redux store variables
+    const dispatch = useDispatch();
     const basketName = useSelector((state) => state.basket.basketName);
     const basketAmount = useSelector((state) => state.basket.basketAmount);
     const adminId = useSelector((state) => state.user.username);
@@ -38,14 +30,23 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     // let weightage = useSelector((state) => state.update.weightage);
     // let price = useSelector((state) => state.update.price);
     // let quantity = useSelector((state) => state.update.quantity);
-
-
+    
+    // local state variables
+    let [localPrice, setLocalPrice] = useState(price);
+    let [localExchange, setLocalExchange] = useState(exchange);
+    let [localOrderType, setLocalOrderType] = useState(orderType);
+    let [localQuantity, setLocalQuantity] = useState(quantity);
+    let [localStock, setLocalStock] = useState(instrumentName);
+    const [toggle, setToggle] = useState(transType);
+    const [limitPrice, setLimitPrice] = useState(price);
+    // let [localTransType, setLocalTransType] = useState(transType);
+    
     // handling update button click
     const handleUpdate = () => {
         const localtransType = toggle;
         console.log(localtransType);
         const postDataAPI = async() => {
-            const data = await updateRecordAPI(recId, basketName, adminId, selectedStock, localExchange, localtransType, quantity, weightage, localPrice, basketAmount);
+            const data = await updateRecordAPI(recId, basketName, adminId, selectedStock, localExchange, localtransType, localOrderType, quantity, weightage, localPrice, basketAmount);
         }
         postDataAPI();
         setHandleFetch(!handleFetch);
@@ -69,7 +70,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     // handling orderType radio button selection
     const handleOrderType = (type) => {
         setLocalOrderType(type); // Update localOrderType when a radio button is clicked
-        dispatch(setOrderType(type)); // Update Redux state with the selected orderType
+        // dispatch(setOrderType(type)); // Update Redux state with the selected orderType
     }
 
     // handling transaction type toggle button
@@ -219,11 +220,18 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                         <input disabled id='quantity' name='quantity' value={segregate(localQuantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
                     </div>
 
+                    {localOrderType === "LIMIT" && (   
+                        <span className='relative ml-8'>
+                            <Label htmlFor="limitInput" value="Limit Input" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                            <input id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="number" className='absolute w-32 rounded-md border border-gray-200' />                                             
+                        </span>                             
+                    )}
+
 
                 </div>
 
                 {/* Modal Butttons */}
-                <div className="flex justify-center mt-4">
+                <div className="flex justify-end mt-4">
                     <button type='submit'  onClick={handleUpdate} className={`${toggle == 'SELL' ? "bg-orange-500 hover:bg-orange-600" : "bg-cyan-800 hover:bg-cyan-700"} border p-2 rounded-md text-white w-20`}>Update</button>
                     <Button color="gray" onClick={() => { props.setOpenModal(undefined)}} className='ml-2 text-md'>Cancel</Button>
                 </div>

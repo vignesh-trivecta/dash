@@ -8,7 +8,7 @@ const SubmitBasket = () => {
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
   const [popup, setPopup] = useState(false);
-  const [model, setModel] = useState(''); 
+  const [model, setModel] = useState(true); 
 
 
   if(popup){
@@ -37,13 +37,16 @@ const SubmitBasket = () => {
             </div>
           </div> */}
           <div className='flex flex-col'>
-            <div className='flex items-center justify-center'>
-              <label className='mr-4'>Basket Validity</label>
-              <ValiditySelector />
-            </div>
+            {model ? 
+              <div className='flex items-center justify-center'>
+                <label className='mr-4'>Basket Validity</label>
+                <ValiditySelector />
+              </div> 
+              : <></>
+            }
             <div className="flex items-center justify-center mt-4">
-              <input id="default-checkbox" type="checkbox" value={model} onClick={() => setModel('model')} className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
               <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Save this as Model Basket</label>
+              <input id="default-checkbox" type="checkbox" value={model} onClick={() => {setModel(!model); console.log(model);}} className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
             </div>
             <div className="flex justify-center mt-10 gap-4">
               <Button onClick={() => {props.setOpenModal(undefined); setPopup(true)}}>
@@ -58,8 +61,8 @@ const SubmitBasket = () => {
       </Modal>
 
       {popup
-        ? <div>
-        <Toast className="absolute top-1/4 right-12 bg-green-400">
+        ? <div className=''>
+        <Toast className="absolute bottom-0 left-2 bg-green-400">
           <div className='flex items-center'>
             <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-green-500 dark:bg-green-800 dark:text-green-200">
               <HiCheck className="h-5 w-5" />

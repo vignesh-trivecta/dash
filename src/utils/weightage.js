@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const Weightage = ({ lweightage, lprice }) => {
 
   // local state variable
-  const [inputValue, setInputValue] = useState(lweightage || null);
+  const [inputValue, setInputValue] = useState(lweightage || 0);
 
   // redux state values
   const weightage = useSelector((state) => state.add.weightage);
@@ -17,13 +17,13 @@ const Weightage = ({ lweightage, lprice }) => {
 
   // Event handler
   const handleChange = (e) => {
-    const newValue = e.target.value;
+    const newValue = (e.target.value);
     console.log(newValue)
     setInputValue(newValue);
 
     if(newValue < 1){
-      setInputValue('1');
-      dispatch(setWeightage('1'));
+      setInputValue(1);
+      dispatch(setWeightage(1));
     }
     else{
       dispatch(setWeightage(newValue));

@@ -9,7 +9,7 @@ const DashNavbar = function () {
 
     const dispatch = useDispatch();
     const router = useRouter();
-    const username = useSelector((state) => state.user.user);
+    const username = useSelector((state) => state.user.username);
     const email = useSelector((state) => state.user.email);
 
   return (

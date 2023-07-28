@@ -234,8 +234,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                             <div className="mt-4">
                                 <div className="relative text-gray-700 mt-4">
                                     <input 
-                                    disabled
-                                    className="block w-full text-gray-700 bg-gray-100 border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600" 
+                                    className="select-none pointer-events-none draggable block w-full text-gray-700 bg-gray-100 border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600" 
                                     type="text" 
                                     value={captchaValue}
                                     ariaLabel="Captcha" 

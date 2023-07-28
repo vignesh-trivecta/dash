@@ -72,7 +72,7 @@ export const addRecord = async(adminId, basketName,selectedStock, exchange, tran
 
 
 // API  call to update a record in table
-export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, exchange, orderType, quantity, weightage, price, basketAmount ) => {
+export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -85,8 +85,8 @@ export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, 
                 "adminName": adminId,
                 "instrumentName": selectedStock,
                 "exchangeUsed": exchange,
-                "orderType": "Limit",
-                "transType": orderType,
+                "orderType": orderType,
+                "transType": transType,
                 "quantity": quantity,
                 "weightage": Number(weightage),
                 "price": price,
@@ -138,11 +138,38 @@ export const deleteRecord = async(recId, basketName, adminName) => {
     }
 }
 
+// API call to submit the whole basket to backend
+export const submitBasket = async (adminName, basketName, modelBasket, basketValidity, basketRequests) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "adminName": adminName,
+                "basketName": basketName,
+                "modelBasket": modelBasket,
+                "basketValidity": basketValidity, 
+                "basketRequests": basketRequests,
+            })
+        }
+        const response = await fetch('http://localhost:8083/basket/create', requestOptions);
+        if(response.ok){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
 
 // API call to check whether the basket name already exists or not
 export const basketNameCheck = async (basketName) => {
-    console.log(basketName)
-
     try {
         const requestOptions = {
             method: 'POST',
@@ -154,7 +181,6 @@ export const basketNameCheck = async (basketName) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/namecheck", requestOptions);
-        console.log(response)
         if(response.ok){
             return true;
         }
