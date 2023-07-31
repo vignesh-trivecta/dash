@@ -29,7 +29,7 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
     // const transType = useSelector((state) => state.add.transType);
     const orderType = useSelector((state) => state.add.orderType);
     const quantity = useSelector((state) => state.add.quantity);
-    const adminId = useSelector((state) => state.user.user);
+    const adminName = useSelector((state) => state.user.username);
     
     // local state variables
     const [toggle, setToggle] = useState(false);
@@ -82,7 +82,7 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
         // the response received needs to be mapped to Table
         const postData = async() => {
             const transType = toggle ? "SELL" : "BUY";
-            const data = await addRecord(adminId, basketName,selectedStock, exchange, transType, quantity, weightage, price, basketAmount);
+            const data = await addRecord(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount);
             if(data.status == 200){
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);

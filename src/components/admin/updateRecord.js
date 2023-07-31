@@ -44,9 +44,8 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     // handling update button click
     const handleUpdate = () => {
         const localtransType = toggle;
-        console.log(localtransType);
         const postDataAPI = async() => {
-            const data = await updateRecordAPI(recId, basketName, adminId, selectedStock, localExchange, localtransType, localOrderType, quantity, weightage, localPrice, basketAmount);
+            const data = await updateRecordAPI(recId, basketName, adminId, selectedStock, localExchange, localOrderType, localtransType, quantity, weightage, localPrice, basketAmount);
         }
         postDataAPI();
         setHandleFetch(!handleFetch);

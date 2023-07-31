@@ -2,6 +2,8 @@ import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { Label } from 'flowbite-react'
+import { useDispatch } from 'react-redux'
+import { setBasketValidity } from '@/store/basketSlice'
 
 const people = [
   { name: '1 day' },
@@ -9,11 +11,18 @@ const people = [
 ]
 
 export default function ValiditySelector({ text }) {
-  const [selected, setSelected] = useState(people[0])
+  const [selected, setSelected] = useState(people[0]);
+  const dispatch = useDispatch();
+
+  const handleChange = (selectedItem) => {
+    setSelected(selectedItem);
+    // Dispatch the value of the selected item to Redux store
+    dispatch(setBasketValidity(selectedItem.name));
+  };
 
   return (
     <div className="">
-      <Listbox value={selected} onChange={setSelected} >
+      <Listbox value={selected} onChange={handleChange} >
         <div className=" mt-1">
           <Listbox.Button className="w-72 relative cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left border border-gray-200 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-xs">
             <span className="block truncate">{selected.name}</span>

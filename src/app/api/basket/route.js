@@ -1,5 +1,5 @@
-// API call to fetch all records of a basket
-export const getRecords = async(adminId, basketName) => {
+// API call to fetch all records of a basket in temp table
+export const getRecords = async(adminName, basketName) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -8,7 +8,7 @@ export const getRecords = async(adminId, basketName) => {
             },
             body: JSON.stringify(
                 {
-                    "adminId": 'admin12',
+                    "adminId": adminName,
                     "basketName": basketName
                 }
             )
@@ -26,13 +26,13 @@ export const getRecords = async(adminId, basketName) => {
     }
     catch(error){
         console.log(error)
-        console.log(adminId, basketName)
+        console.log(adminName, basketName)
     }
 }
 
 
 // API call to add a new record
-export const addRecord = async(adminId, basketName,selectedStock, exchange, transType, quantity, weightage, price, basketAmount ) => {
+export const addRecord = async(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -40,11 +40,11 @@ export const addRecord = async(adminId, basketName,selectedStock, exchange, tran
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "adminId": 'admin12',
+                "adminId": adminName,
                 "basketName": String(basketName),
                 "instrumentName": selectedStock,
                 "exchangeUsed": exchange,
-                "orderType": "Limit",
+                "orderType": orderType,
                 "transType": transType,
                 "quantity": quantity,
                 "weightage": Number(weightage),
@@ -58,6 +58,7 @@ export const addRecord = async(adminId, basketName,selectedStock, exchange, tran
         if (response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
+            console.log(orderType);
             console.log(data)
             return data;
         } else {
@@ -149,12 +150,13 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
             body: JSON.stringify({
                 "adminName": adminName,
                 "basketName": basketName,
-                "modelBasket": modelBasket,
+                "basketModel": modelBasket,
                 "basketValidity": basketValidity, 
                 "basketRequests": basketRequests,
             })
         }
         const response = await fetch('http://localhost:8083/basket/create', requestOptions);
+        console.log(basketRequests);
         if(response.ok){
             return true;
         }
@@ -163,6 +165,32 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
         }
     }
     catch(error){
+        console.log(error);
+    }
+}
+
+// API call to get the list of basket details
+export const getBasketList = async() => {
+    try{
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        const response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
+
+        if(response.ok){
+            const jsonData = await response.json();
+            return jsonData;
+        }
+        else {
+            const errorText = await response.text();
+            throw new Error(`Failed to fetch data: ${errorText}`);
+        }
+    }
+    catch(error)
+    {
         console.log(error);
     }
 }
@@ -193,8 +221,6 @@ export const basketNameCheck = async (basketName) => {
         console.log(error);
     }
 }
-
-
 
 // API call for getting the price of Equity
 export const getEquityPrice = async (instrumentName, exchange) => {
@@ -289,10 +315,11 @@ export const getCustomers = async() => {
                 'Content-Type': 'application/json'
             }
         }
-        const response = await fetch("https://localhost:8083/", requestOptions);
+        const response = await fetch("http://localhost:8083/customer-details", requestOptions);
 
         if(response.ok){
             const jsonData = await response.json();
+            console.log(jsonData)
             return jsonData;
         }
         else {
@@ -301,32 +328,6 @@ export const getCustomers = async() => {
         }
     }
     catch(error){
-        return [
-{
-"name": "Muthu Kumar",
-"contactOne": "9812937972",
-"email": "muthu787@gmail.com"
-},
-{
-"name": "Raji Vinod",
-"contactOne": "7773177888",
-"email": "raji345@hotmail.com"
-},
-{
-"name": "Aadhan Madhankumar",
-"contactOne": "6213612398",
-"email": "aadhan@gmail.com"
-},
-{
-"name": "Shravan Madhankumar",
-"contactOne": "2187827889",
-"email": "shravan@hotmail.com"
-},
-{
-"name": "vimala parmasivam",
-"contactOne": "9095555569",
-"email": "vimala@gmail.com"
-}
-];
+        return console.log(error);
     }
 }

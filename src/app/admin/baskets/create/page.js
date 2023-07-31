@@ -11,7 +11,7 @@ import { getRecords } from '@/app/api/basket/route';
 import BasketRecords from '@/components/admin/basketRecords';
 import SubmitBasket from '@/components/admin/submitBasket';
 import { segregate } from '@/utils/priceSegregator';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const CreateBasket = () => {
 
@@ -29,6 +29,12 @@ const CreateBasket = () => {
   const adminId = useSelector((state) => state.user.username);
   const basketName = useSelector((state) => state.basket.basketName);
   const basketAmount = useSelector((state) => state.basket.basketAmount);
+
+  const router = useRouter();
+  // function to handle user mapping
+  const handleMapping = () => {
+    router.push('/admin/baskets/create/customerMapping');
+  }
 
   useEffect(() => {
     dispatch(setBasketName(""));
@@ -110,7 +116,7 @@ const CreateBasket = () => {
             <thead className='sticky top-0 border bg-gray-50' >
               <tr>
                 <th className='font-medium text-sm p-2'>S.No</th>
-                <th className='font-medium text-sm' style={{width: '25%'}}>Stock</th>
+                <th className='font-medium text-sm text-left' style={{width: '25%'}}>Stock</th>
                 <th className='font-medium text-sm'>Exchange</th>
                 <th className='font-medium text-sm'>Transaction</th>
                 <th className='text-right font-medium text-sm'>Weights&nbsp;%</th>
@@ -143,16 +149,21 @@ const CreateBasket = () => {
       
       <div className='flex justify-end items-center mt-4'>
 
-        {/* Add Record Component */}
+        {/* Buttons Component */}
+        
+        <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button>
         { comparison 
-          ? <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
+          ? 
+          <>
+            <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
+            <SubmitBasket />
+          </>
+
           : <>
               <Button disabled className=''>Add Record</Button>
+              <Button disabled className=''>Save</Button>
             </>
         }
-
-        {/* Submit Basket Button */}
-        <SubmitBasket />
 
       </div>
 

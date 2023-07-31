@@ -1,15 +1,37 @@
+import { getRecords, submitBasket } from '@/app/api/basket/route';
 import ValiditySelector from '@/utils/validitySelector';
 import { Button, Label, Modal, Toast } from 'flowbite-react';
 import React, {useState} from 'react';
 import { HiCheck } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
 
 const SubmitBasket = () => {
 
+  // modal state variables
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
-  const [popup, setPopup] = useState(false);
-  const [model, setModel] = useState(true); 
 
+  // local state variables
+  const [popup, setPopup] = useState(false);
+  const [modelBasket, setModelBasket] = useState(true); 
+
+  // redux state
+  const adminName = useSelector((state) => state.user.username);
+  const basketName = useSelector((state) => state.basket.basketName);
+  const basketValidity = useSelector((state) => state.basket.basketValidity);
+
+  // function to submit all the records
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const basketRequests = await getRecords(adminName, basketName);
+    const response = await submitBasket(adminName, basketName, modelBasket, basketValidity, basketRequests);
+  }
+
+  // function to handle check input 
+  const handleCheckboxChange = (event) => {
+    setModelBasket(event.target.checked);
+    console.log(modelBasket)
+  }
 
   if(popup){
     setTimeout(() => {
@@ -19,25 +41,12 @@ const SubmitBasket = () => {
 
   return (
     <div className=''>
-      <Button onClick={() => props.setOpenModal('pop-up')}   className='ml-8'>Submit</Button>
+      <Button onClick={() => props.setOpenModal('pop-up')}   className='ml-8'>Save</Button>
       <Modal show={props.openModal === 'pop-up'} size="md" popup onClose={() => props.setOpenModal(undefined)}>
         <Modal.Header />
         <Modal.Body>
-          {/* <div className="text-center">
-            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to submit this basket?
-            </h3>
-            <div className="flex justify-center gap-4">
-              <Button onClick={() => {props.setOpenModal(undefined); setPopup(true)}}>
-                Yes, I'm sure
-              </Button>
-              <Button color="gray" onClick={() => props.setOpenModal(undefined)}>
-                No, cancel
-              </Button>
-            </div>
-          </div> */}
           <div className='flex flex-col'>
-            {model ? 
+            {!modelBasket ? 
               <div className='flex items-center justify-center'>
                 <label className='mr-4'>Basket Validity</label>
                 <ValiditySelector />
@@ -46,10 +55,10 @@ const SubmitBasket = () => {
             }
             <div className="flex items-center justify-center mt-4">
               <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Save this as Model Basket</label>
-              <input id="default-checkbox" type="checkbox" value={model} onClick={() => {setModel(!model); console.log(model);}} className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+              <input id="default-checkbox" type="checkbox" checked={modelBasket} onChange={handleCheckboxChange} className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
             </div>
             <div className="flex justify-center mt-10 gap-4">
-              <Button onClick={() => {props.setOpenModal(undefined); setPopup(true)}}>
+              <Button onClick={(e) => {props.setOpenModal(undefined); setPopup(true); handleSubmit(e);}}>
                 Save
               </Button>
               <Button color="gray" onClick={() => props.setOpenModal(undefined)}>
@@ -68,7 +77,8 @@ const SubmitBasket = () => {
               <HiCheck className="h-5 w-5" />
             </div>
             <div className="ml-3 text-sm font-normal text-white">
-              Basket Saved successfully
+              Basket Saved successfully! 
+              
             </div>
           </div>
           <Toast.Toggle className='bg-green-400 text-white'/>

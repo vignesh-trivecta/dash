@@ -5,6 +5,7 @@ const initialState = {
   basketName: '',
   basketAmount: 0,
   basketValue: 0,
+  basketValidity: '1 day',
 };
 
 // creating a new slice
@@ -21,9 +22,12 @@ const basketSlice = createSlice({
     setBasketValue: (state, action) => {
       state.basketAmount = action.payload;
     },
+    setBasketValidity: (state, action) => {
+      state.basketValidity = action.payload;
+    },
   },
 });
 
-export const { setBasketName, setBasketAmount, setBasketValue } = basketSlice.actions;
+export const { setBasketName, setBasketAmount, setBasketValue, setBasketValidity } = basketSlice.actions;
 
 export default basketSlice.reducer;

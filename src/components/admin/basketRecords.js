@@ -3,14 +3,14 @@ import UpdateRecord from './updateRecord';
 import { segregate } from '@/utils/priceSegregator';
 import DeleteRecord from './deleteRecord';
 
-const BasketRecords = ({ key, record, index, handleFetch, setHandleFetch }) => {
+const BasketRecords = ({ record, index, handleFetch, setHandleFetch }) => {
 
   return (
     <tr className='border hover:bg-gray-50'>
       <th>
         <div className='text-sm text-black'>{index+1}</div>
       </th>
-      <td className='text-center'>
+      <td className='text-left'>
         <div className='text-sm text-black'>{record.instrumentName}</div>
       </td>
       <td className='text-center'>

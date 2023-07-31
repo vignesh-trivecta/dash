@@ -3,118 +3,62 @@
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { segregate } from "@/utils/priceSegregator";
+import { useEffect } from "react";
+import { getBasketList } from "@/app/api/basket/route";
+import { useState } from "react";
 const BasketDetails = () => {
 
     const loggedIn = useSelector((state) => state.user.loggedIn);
+    const [records, setRecords] = useState([]);
+
+    useEffect(() => {
+        const fetchBaskets = async() => {
+            const response = await getBasketList();
+            setRecords(response);
+            console.log(response);
+        }
+        fetchBaskets();
+    }, [])
 
     return(
-        <div className="container">
-
+        <div className="container"> 
+            <h1 className="font-bold ml-8">Baskets</h1>
             {/* Customer Details table */}
-            <div className="mt-4 ml-8 overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left text-gray-900 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <div className="mt-4 ml-8 overflow-x-auto overflow-y-scroll"  style={{ maxHeight: '450px'}}>
+                <table className='table-auto w-full border'>
+                    <thead className="sticky top-0 border bg-gray-50">
                         <tr>
-                            <th scope="col" className="px-6 py-3">
-                                S.No
-                            </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className=" font-medium text-sm text-left p-2">
                                 Basket Name
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className=" font-medium text-sm text-right p-2">
                                 Stock
                             </th>
-                            <th scope="col" className="px-6 py-3">
-                                Total &#8377;
+                            <th scope="col" className=" font-medium text-sm text-right p-2">
+                                Investment Amount &#8377;
+                            </th>
+                            <th scope="col" className=" font-medium text-sm p-2">
+                                Created By
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className="bg-white border dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                1
-                            </th>
-                            <td className="px-6 py-4">
-                                Vinod
-                            </td>
-                            <td className="px-6 py-4">
-                                10
-                            </td>
-                            <td className="px-6 py-4">
-                                {segregate(500000)}
-                            </td>
-                        </tr>
-                        <tr className="bg-white border dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                2
-                            </th>
-                            <td className="px-6 py-4">
-                                Meera
-                            </td>
-                            <td className="px-6 py-4">
-                                8
-                            </td>
-                            <td className="px-6 py-4">
-                                {segregate(300000)}
-                            </td>
-                        </tr>
-                        <tr className="bg-white border dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                3
-                            </th>
-                            <td className="px-6 py-4">
-                                Veera
-                            </td>
-                            <td className="px-6 py-4">
-                                5
-                            </td>
-                            <td className="px-6 py-4">
-                                {segregate(100000)}
-                            </td>
-                        </tr>
-                        <tr className="bg-white border dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                4
-                            </th>
-                            <td className="px-6 py-4">
-                                Shriram
-                            </td>
-                            <td className="px-6 py-4">
-                                10
-                            </td>
-                            <td className="px-6 py-4">
-                                {segregate(600000)}
-                            </td>
-                        </tr>
-                        <tr className="bg-white border dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                5
-                            </th>
-                            <td className="px-6 py-4">
-                                Baskar
-                            </td>
-                            <td className="px-6 py-4">
-                                9
-                            </td>
-                            <td className="px-6 py-4">
-                                {segregate(1500000)}
-                            </td>
-                        </tr>
-                        <tr className="bg-white border dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                6
-                            </th>
-                            <td className="px-6 py-4">
-                                Kumar
-                            </td>
-                            <td className="px-6 py-4">
-                                4
-                            </td>
-                            <td className="px-6 py-4">
-                                {segregate(4000000)}
-                            </td>
-                        </tr>
-                        
+                        {records?.map((record, index) => {
+                            return <tr className='border hover:bg-gray-50'>
+                                        <td className='text-left'>
+                                            <div className='text-sm text-black p-2'>{record.basketName}</div>
+                                        </td>
+                                        <td className='text-right'>
+                                            <div className='text-sm text-black p-2'>{record.totalNoOrders}</div>
+                                        </td>
+                                        <td className='text-right'>
+                                            <div className='text-sm text-black p-2'>{segregate(record.basketInvAmount)}</div>
+                                        </td>
+                                        <td className='text-center'>
+                                            <div className='text-sm text-black p-2'>{record.createdBy}</div>    
+                                        </td>          
+                            </tr>
+                        })}
                     </tbody>
                 </table>
             </div>

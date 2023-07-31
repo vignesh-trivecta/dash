@@ -28,7 +28,9 @@ const BasketName = ({autoFocus}) => {
       setStatus(false);
     }
     else{
-      console.log('not ok')
+      console.log('not ok');
+      setInputValue(inputValue);
+      dispatch(setBasketName(inputValue));
       setStatus(true);
     }
   };

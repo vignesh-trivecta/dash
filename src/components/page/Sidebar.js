@@ -60,16 +60,9 @@ const ExampleSidebar = function () {
                         </Link>
                     </Sidebar.Item>
                     <Sidebar.Item 
-                        icon={FaRegClone}
-                    >
-                        <Link href="/admin/baskets/create">
-                            Clone                        
-                        </Link>
-                    </Sidebar.Item>
-                    <Sidebar.Item 
                         icon={AiOutlineFolderView}
                     >
-                        <Link href="/admin/baskets/">
+                        <Link href="/admin/baskets/view">
                             View                        
                         </Link>
                     </Sidebar.Item>
