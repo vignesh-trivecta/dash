@@ -24,17 +24,23 @@ const CreateBasket = () => {
   const [handleFetch, setHandleFetch] = useState(false);
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // redux state variables
   const adminId = useSelector((state) => state.user.username);
   const basketName = useSelector((state) => state.basket.basketName);
   const basketAmount = useSelector((state) => state.basket.basketAmount);
 
-  const router = useRouter();
   // function to handle user mapping
   const handleMapping = () => {
+    setSaved(false);
     router.push('/admin/baskets/create/customerMapping');
   }
+
+  const [saved, setSaved] = useState('');
+  useEffect(() => {
+    console.log(saved);
+  }, [saved])
 
   useEffect(() => {
     dispatch(setBasketName(""));
@@ -52,7 +58,6 @@ const CreateBasket = () => {
 
   // comparison to check whether basketVal is greater than investmentVal
   const [comparison, setComparison] = useState(true);
-  
   const investmentVal = segregate(basketAmount);   // formatting input amount
   
   // getting basket total value
@@ -75,6 +80,15 @@ const CreateBasket = () => {
       console.log('visible')
     }
   }, [records]);
+
+// Conditional rendering for buttons based on comparison and existence of total/basketAmount
+let isButtonDisabled;
+if(basketAmount !== 0 && basketName !== ''){
+  isButtonDisabled = true;
+}
+else {
+  isButtonDisabled = false;
+}
   
   
   const isTableEmpty = !records || records.length === 0; // checking if table is empty
@@ -111,7 +125,7 @@ const CreateBasket = () => {
 
       {/* Table showing Create Basket Records */}
       <div className='flex'>
-        <div className={isTableEmpty ? '' : 'overflow-y-scroll'}  style={{ maxHeight: '300px' }}>
+        <div className={isTableEmpty ? '' : 'overflow-y-scroll'}  style={{ height: '300px' }}>
           <table className='table-fixed w-full border' >
             <thead className='sticky top-0 border bg-gray-50' >
               <tr>
@@ -137,7 +151,10 @@ const CreateBasket = () => {
                     handleFetch={handleFetch} 
                     setHandleFetch={setHandleFetch}
                   />
-                  ))) : <p>No table data</p>}
+                  ))) : <td colSpan="8" style={{ height: '250px', textAlign: 'center' }}>
+                          No table data
+                        </td>  
+                  }
                   
               </tbody>
             }
@@ -146,29 +163,42 @@ const CreateBasket = () => {
       </div>
 
 
-      
-      <div className='flex justify-end items-center mt-4'>
+      <div className='flex justify-between'>
+        <div className=''>
+            {/* <Label htmlFor='quantity' value="Message" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' /> */}
+            { saved !== ''
+            ? <div className='p-2 mt-2 text-green-600' dangerouslySetInnerHTML={{ __html: saved }} />
+            : comparison 
+                ? (<div className='p-2 mt-2 text-green-600'>{isButtonDisabled ? <p>Add records to the basket!</p> : <p>Create new Basket!</p> }</div>) 
+                : <div className='p-2 mt-2 text-green-600'><p>Basket Value higher than Investment. Delete some records!</p></div>
+            }
+        </div>
+        <div className='flex justify-end items-center mt-8'>
 
-        {/* Buttons Component */}
-        
-        <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button>
-        { comparison 
-          ? 
-          <>
-            <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
-            <SubmitBasket />
-          </>
-
-          : <>
-              <Button disabled className=''>Add Record</Button>
-              <Button disabled className=''>Save</Button>
+          {/* Buttons Component */}
+          
+          {/* Conditional rendering based on comparison and records.length */}
+          { comparison && (basketAmount !== '' && basketName !== '')
+            ? 
+            <>
+              <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button>
+              <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
+              <SubmitBasket saved={saved} setSaved={setSaved} />
             </>
-        }
 
+            : <>
+                <Button disabled className='mr-8'>Map to Customer</Button>
+                <Button disabled className=''>Add Record</Button>
+                <Button disabled className='ml-8'>Save</Button>
+              </>
+          } 
+
+
+        </div>
       </div>
 
       {/* Create Basket Modal */}
-      <div>
+      {/* <div>
         <Modal show={props.openModal === 'form-elements'} popup onClose={() => props.setOpenModal(undefined)}>
             <Modal.Header />
             <Modal.Body className='overflow-hidden'>
@@ -185,13 +215,24 @@ const CreateBasket = () => {
                   <Label htmlFor='basketAmount' value="Investment Amount" className='' /> 
                 </div>                
                 <BasketAmount />
-                <div className='row-start-3 col-start-2 flex justify-end mr-10'>
-                  <button type='submit' onClick={() => {props.setOpenModal(undefined); setHandleFetch(!handleFetch) }} className='bg-cyan-700 text-white p-2 rounded-md hover:bg-cyan-800'>Create</button>
+                <div className='row-start-3 col-start-2 flex justify-between mr-10'>
+                  <button type='submit' onClick={() => {
+                    if(basketAmount !== "" && basketName !== ""){
+                      props.setOpenModal(undefined); 
+                      setHandleFetch(!handleFetch);
+                    }
+                   }} c
+                   className='bg-cyan-700 text-white p-2 rounded-md hover:bg-cyan-800 w-24 h-12'>Create</button>
+                  <Button type='submit' onClick={() => {
+                    props.setOpenModal(undefined); 
+                   }} 
+                   color="gray" 
+                   className=" p-2 rounded-md w-24 h-12">Cancel</Button>
                 </div>
               </div>
             </Modal.Body>
         </Modal>
-    </div>
+      </div> */}
     </div>
   )
 }

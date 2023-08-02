@@ -69,12 +69,12 @@ export default function UpdateSearchDropdown ({ instrumentName, id }) {
             afterLeave={() => setQuery("")}
           >
             <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" style={{height: "150px"}}>
-              {filteredStocksList.length === 0 && query !== "" ? (
+              {filteredStocksList?.length === 0 && query !== "" ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                   Nothing found.
                 </div>
               ) : (
-                filteredStocksList.map((stock, index) => (
+                filteredStocksList?.map((stock, index) => (
                   <Combobox.Option
                     key={index}
                     className={({ active }) =>

@@ -221,8 +221,8 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
 
                     {localOrderType === "LIMIT" && (   
                         <span className='relative ml-8'>
-                            <Label htmlFor="limitInput" value="Limit Input" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                            <input id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="number" className='absolute w-32 rounded-md border border-gray-200' />                                             
+                            <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                            <input id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className='absolute w-32 rounded-md border border-gray-200' />                                             
                         </span>                             
                     )}
 

@@ -41,7 +41,7 @@ const DashLayout = ({children}) => {
 
 const MainContent = function ({ children }) {
   return (
-    <main className="relative h-full w-full overflow-y-auto pl-4">
+    <main className="relative w-full overflow-y-scroll pl-4" style={{ height: '80vh' }}>
       {children}
     </main>
   );

@@ -3,9 +3,10 @@ import ValiditySelector from '@/utils/validitySelector';
 import { Button, Label, Modal, Toast } from 'flowbite-react';
 import React, {useState} from 'react';
 import { HiCheck } from 'react-icons/hi';
+import { IoAlert } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 
-const SubmitBasket = () => {
+const SubmitBasket = ({ setSaved, disabled }) => {
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -13,6 +14,7 @@ const SubmitBasket = () => {
 
   // local state variables
   const [popup, setPopup] = useState(false);
+  const [message, setMessage] = useState(false);
   const [modelBasket, setModelBasket] = useState(true); 
 
   // redux state
@@ -33,15 +35,9 @@ const SubmitBasket = () => {
     console.log(modelBasket)
   }
 
-  if(popup){
-    setTimeout(() => {
-      setPopup(false);
-    }, 3000)
-  }
-
   return (
     <div className=''>
-      <Button onClick={() => props.setOpenModal('pop-up')}   className='ml-8'>Save</Button>
+      <Button onClick={() => props.setOpenModal('pop-up')} disabled={disabled}  className='ml-8'>Save</Button>
       <Modal show={props.openModal === 'pop-up'} size="md" popup onClose={() => props.setOpenModal(undefined)}>
         <Modal.Header />
         <Modal.Body>
@@ -70,23 +66,10 @@ const SubmitBasket = () => {
       </Modal>
 
       {popup
-        ? <div className=''>
-        <Toast className="absolute bottom-0 left-2 bg-green-400">
-          <div className='flex items-center'>
-            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-green-500 dark:bg-green-800 dark:text-green-200">
-              <HiCheck className="h-5 w-5" />
-            </div>
-            <div className="ml-3 text-sm font-normal text-white">
-              Basket Saved successfully! 
-              
-            </div>
-          </div>
-          <Toast.Toggle className='bg-green-400 text-white'/>
-        </Toast>
-      </div>
-      :
-      <></>  
+        ? setSaved(`<div><p>Basket Saved Successfully!</p><p>Map the basket to Customer.</p>`)
+      : setSaved('')
     }
+
     
     </div>
   )
