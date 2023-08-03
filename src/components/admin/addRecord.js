@@ -6,7 +6,7 @@ import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import Weightage from '@/utils/weightage';
-import { addRecord, getEquityPrice } from '@/app/api/basket/route';
+import { addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
 import { setExchange, setTransType, setOrderType, setPrice, setQuantity, setSelectedStock, setWeightage } from '@/store/addRecordSlice';
 import StockValidity from '@/utils/stockValidity';
 import { segregate } from '@/utils/priceSegregator';
@@ -33,7 +33,7 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
     
     // local state variables
     const [toggle, setToggle] = useState(false);
-    const [limitPrice, setLimitPrice] = useState(price);
+    const [limitPrice, setLimitPrice] = useState(null);
 
     // const [fectch, setFetch] = useState(false);
 
@@ -61,6 +61,25 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
     const handleLimitPrice = (e) => {
         setLimitPrice(e.target.value);
     }
+
+    // Event handler
+    const handleChange = (e) => {
+    const newValue = (e.target.value);
+
+        if(newValue < 1){
+        dispatch(setWeightage(1));
+        }
+        else{
+        dispatch(setWeightage(newValue));
+        }
+        quantityAPI();
+    };
+
+  // //function to get the quantity of stocks based on weightage
+  const quantityAPI = async () => {
+      const quantity = await sendWeightage(weightage, basketAmount, price);
+      dispatch(setQuantity(quantity));
+  }
 
     // function to submit the modal 
     const handleSubmit = (e) => {
@@ -101,8 +120,9 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
             dispatch(setSelectedStock(''));
             dispatch(setExchange(''));
             dispatch(setPrice(''));
-            dispatch(setWeightage(''));
+            dispatch(setWeightage(null));
             dispatch(setQuantity(''));
+            dispatch(setOrderType(''));
             dispatch(setTransType(''));
         }}
         >
@@ -155,10 +175,17 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
                             }} />
                             <label htmlFor='nse' className='ml-1 text-sm'>NSE</label>
                         </div>
-
+                        
+                        {/* Weightage element */}
                         <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-sm' />
                         <div className='rounded-md col-start-2 row-start-3 h-10'>
-                            <Weightage />
+                            <input
+                                type='number'
+                                value={weightage}
+                                onChange={handleChange}
+                                className='w-full border border-gray-200 rounded-md'
+                                autoFocus
+                            />
                         </div>
 
                         {/* <Label value="Transaction Type" className='col-start-1 row-start-4 text-sm'/> */}
@@ -184,7 +211,7 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
                         )}
 
                             
-
+                        {/* Quantity element */}
                         <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
                             <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
                             <input disabled id='quantity' name='quantity' value={segregate(quantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />

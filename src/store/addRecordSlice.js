@@ -7,7 +7,7 @@ const initialState = {
     exchange: "",
     transType: "",
     orderType: "",
-    weightage: 0,
+    weightage: null,
     quantity: null,
     price: null,
 };

@@ -7,6 +7,7 @@ const initialState = {
   basketValue: 0,
   basketValidity: '1 day',
   basketBroker: 'AXIS',
+  basketRecords: [],
 };
 
 // creating a new slice
@@ -29,9 +30,12 @@ const basketSlice = createSlice({
     setBasketBroker: (state, action) => {
       state.basketBroker = action.payload;
     },
+    setBasketRecords: (state, action) => {
+      state.basketRecords = action.payload;
+    },
   },
 });
 
-export const { setBasketName, setBasketAmount, setBasketValue, setBasketValidity, setBasketBroker } = basketSlice.actions;
+export const { setBasketName, setBasketAmount, setBasketValue, setBasketValidity, setBasketBroker, setBasketRecords } = basketSlice.actions;
 
 export default basketSlice.reducer;

@@ -2,7 +2,7 @@
 
 import AddRecord from '@/components/admin/addRecord';
 import React, { useEffect, useState } from 'react';
-import { Button, Label, Modal, Toast } from 'flowbite-react';
+import { Button, Label, Modal, Toast, Tooltip } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBasketAmount, setBasketName } from '@/store/basketSlice';
 import BasketName from '@/utils/basketName';
@@ -83,7 +83,7 @@ const CreateBasket = () => {
 
 // Conditional rendering for buttons based on comparison and existence of total/basketAmount
 let isButtonDisabled;
-if(basketAmount !== 0 && basketName !== ''){
+if(basketAmount !== '' && basketName !== ''){
   isButtonDisabled = true;
 }
 else {
@@ -101,24 +101,16 @@ else {
       {/* Investment details row */}
       <div className="flex justify-between mb-2">
         <div className="flex items-center">
-          <p className="text-black text-sm dark:text-white mr-2">Basket Name</p>
-          {/* <input disabled type="text" value={basketName} className="border border-gray-200 rounded-lg w-44" />
-          <div class="flex"> */}
-          <input disabled type="text" value={basketName} className="border border-gray-200 rounded-lg w-44" />
-          {/* <Link href="#" onClick={() => props.setOpenModal("form-elements")} class=" text-md text-gray-900 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-          <svg className=" ml-2 w-6 h-6 text-gray-500 hover:text-gray-800 dark:text-white" ariaHidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
-                <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
-            </svg>
-          </Link> */}
+          <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
+          <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 rounded-lg w-44" />
         </div>
         <div className="flex items-center">
-          <p className="text-black text-sm dark:text-white mr-2">Investment</p>
-          <input disabled type="text" value={investmentVal} className="border border-gray-200 rounded-lg w-44" />
+          <label className="text-black text-sm dark:text-white mr-2">Investment</label>
+          <input type="text" value={investmentVal} onChange={(e) => {dispatch(setBasketAmount(e.target.value))}} className="border border-gray-200 rounded-lg w-44" />
         </div>
         <div className="flex items-center">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value</p>
-          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44" />
+          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
         </div>
       </div>  
           
@@ -162,21 +154,22 @@ else {
         </div>
       </div>
 
-
+      
       <div className='flex justify-between'>
+        
+        {/* Message Box */}
         <div className=''>
             {/* <Label htmlFor='quantity' value="Message" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' /> */}
             { saved !== ''
             ? <div className='p-2 mt-2 text-green-600' dangerouslySetInnerHTML={{ __html: saved }} />
             : comparison 
-                ? (<div className='p-2 mt-2 text-green-600'>{isButtonDisabled ? <p>Add records to the basket!</p> : <p>Create new Basket!</p> }</div>) 
+                ? (<div className='p-2 mt-2 text-green-600'>{isButtonDisabled ? <p>Add records to the basket!</p> : <p>Enter Basket name and Investment amount!</p> }</div>) 
                 : <div className='p-2 mt-2 text-green-600'><p>Basket Value higher than Investment. Delete some records!</p></div>
             }
         </div>
-        <div className='flex justify-end items-center mt-8'>
 
-          {/* Buttons Component */}
-          
+        {/* Buttons Component */}
+        <div className='flex justify-end items-center mt-8'>
           {/* Conditional rendering based on comparison and records.length */}
           { comparison && (basketAmount !== '' && basketName !== '')
             ? 
@@ -187,52 +180,20 @@ else {
             </>
 
             : <>
-                <Button disabled className='mr-8'>Map to Customer</Button>
-                <Button disabled className=''>Add Record</Button>
-                <Button disabled className='ml-8'>Save</Button>
+                <Tooltip content="Enter Basket name and Investment amount!">
+                  <Button disabled className='mr-8'>Map to Customer</Button>
+                </Tooltip>
+                <Tooltip content="Enter Basket name and Investment amount!">
+                  <Button disabled className=''>Add Record</Button>
+                </Tooltip>
+                <Tooltip content="Enter Basket name and Investment amount!">
+                  <Button disabled className='ml-8'>Save</Button>
+                </Tooltip>
               </>
-          } 
-
-
+          }
         </div>
       </div>
-
-      {/* Create Basket Modal */}
-      {/* <div>
-        <Modal show={props.openModal === 'form-elements'} popup onClose={() => props.setOpenModal(undefined)}>
-            <Modal.Header />
-            <Modal.Body className='overflow-hidden'>
-              <h4 className="text-xl font-medium text-gray-900 dark:text-white mb-4">Create New Basket</h4>
-              <hr />
-              <div className='grid grid-rows-3 grid-cols-2 gap-4 mt-4'>
-                
-                <div className='flex items-center justify-start'>
-                  <Label htmlFor='basketName' value="Basket Name" className='' /> 
-                </div>
-                <BasketName autoFocus={true} />
-
-                <div className='flex items-center justify-start'>
-                  <Label htmlFor='basketAmount' value="Investment Amount" className='' /> 
-                </div>                
-                <BasketAmount />
-                <div className='row-start-3 col-start-2 flex justify-between mr-10'>
-                  <button type='submit' onClick={() => {
-                    if(basketAmount !== "" && basketName !== ""){
-                      props.setOpenModal(undefined); 
-                      setHandleFetch(!handleFetch);
-                    }
-                   }} c
-                   className='bg-cyan-700 text-white p-2 rounded-md hover:bg-cyan-800 w-24 h-12'>Create</button>
-                  <Button type='submit' onClick={() => {
-                    props.setOpenModal(undefined); 
-                   }} 
-                   color="gray" 
-                   className=" p-2 rounded-md w-24 h-12">Cancel</Button>
-                </div>
-              </div>
-            </Modal.Body>
-        </Modal>
-      </div> */}
+      
     </div>
   )
 }

@@ -4,10 +4,8 @@ import { sendWeightage } from '@/app/api/basket/route';
 import { useDispatch, useSelector } from 'react-redux';
 
 
-const Weightage = ({ lweightage, lprice }) => {
+const Weightage = ({ lweightage }) => {
 
-  // local state variable
-  const [inputValue, setInputValue] = useState(lweightage || 0);
 
   // redux state values
   const weightage = useSelector((state) => state.add.weightage);
@@ -18,11 +16,8 @@ const Weightage = ({ lweightage, lprice }) => {
   // Event handler
   const handleChange = (e) => {
     const newValue = (e.target.value);
-    console.log(newValue)
-    setInputValue(newValue);
 
     if(newValue < 1){
-      setInputValue(1);
       dispatch(setWeightage(1));
     }
     else{
@@ -33,10 +28,7 @@ const Weightage = ({ lweightage, lprice }) => {
 
   // //function to get the quantity of stocks based on weightage
   const quantityAPI = async () => {
-      console.log('api call enter');
-      console.log(weightage, basketAmount, price)
       const quantity = await sendWeightage(weightage, basketAmount, price);
-      console.log("setting price")
       dispatch(setQuantity(quantity));
   }
 
@@ -44,7 +36,7 @@ const Weightage = ({ lweightage, lprice }) => {
     <div className=''>
       <input
         type='number'
-        value={inputValue}
+        value={weightage}
         onChange={handleChange}
         className='w-full border border-gray-200 rounded-md'
         autoFocus

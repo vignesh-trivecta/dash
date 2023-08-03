@@ -182,6 +182,37 @@ export const getBasketList = async() => {
 
         if(response.ok){
             const jsonData = await response.json();
+            console.log(jsonData);
+            return jsonData;
+        }
+        else {
+            const errorText = await response.text();
+            throw new Error(`Failed to fetch data: ${errorText}`);
+        }
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+}
+
+// API call to get the specific basket and its details
+export const getSpecificBasket = async(basketName) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "basketName": basketName,
+            })
+        }
+        const response = await fetch("http://localhost:8083/view/basket", requestOptions);
+
+        if(response.ok){
+            const jsonData = await response.json();
+            console.log(jsonData);
             return jsonData;
         }
         else {
