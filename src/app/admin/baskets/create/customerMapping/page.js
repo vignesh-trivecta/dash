@@ -9,7 +9,7 @@ import { Button, Modal, Toast } from "flowbite-react";
 import { HiCheck } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import { Listbox, Transition } from '@headlessui/react';
-import { setBasketBroker } from '@/store/basketSlice'
+import { setBasketAmount, setBasketBroker, setBasketName } from '@/store/basketSlice'
 
 const CustomerMapping = () => {
     
@@ -25,14 +25,14 @@ const CustomerMapping = () => {
     const [message, setMessage] = useState(false);
     const [selected, setSelected] = useState(broker[0]);
 
-
-    const router = useRouter();
+    const basketName = useSelector((state) => state.basket.basketName);
     
     // modal state variables
     const [openModal, setOpenModal] = useState();
     const props = { openModal, setOpenModal };
-
+    
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const handleChange = (selectedItem) => {
         setSelected(selectedItem);
@@ -51,23 +51,27 @@ const CustomerMapping = () => {
     }, []);   
       
     if(weblink){
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
         setTimeout(() => {
             setWeblink(false);
-            router.push("/admin/dashboard");
+            router.push("/admin/baskets/create");
         }, 3000)
     }
 
     if(message){
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
         setTimeout(() => {
             setMessage(false);
-            router.push("/admin/dashboard");
+            router.push("/admin/baskets/create");
         }, 3000)
     }
 
     return(
        <div className="container">
 
-            <h5 className="font-semibold mb-4">Map basket to a customer</h5>
+            <h5 className="font-semibold mb-4">Map {basketName} to a customer</h5>
 
             {/* Customer Details table */}
             <div className="overflow-x-auto overflow-y-scroll">

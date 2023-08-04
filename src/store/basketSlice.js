@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 // initial state values
 const initialState = {
   basketName: '',
-  basketAmount: 0,
+  basketAmount: '',
   basketValue: 0,
   basketValidity: '1 day',
   basketBroker: 'AXIS',
@@ -22,7 +22,7 @@ const basketSlice = createSlice({
       state.basketAmount = action.payload;
     },
     setBasketValue: (state, action) => {
-      state.basketAmount = action.payload;
+      state.basketValue = action.payload;
     },
     setBasketValidity: (state, action) => {
       state.basketValidity = action.payload;

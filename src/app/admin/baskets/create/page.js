@@ -9,7 +9,8 @@ import { getRecords } from '@/app/api/basket/route';
 import BasketRecords from '@/components/admin/basketRecords';
 import SubmitBasket from '@/components/admin/submitBasket';
 import { segregate } from '@/utils/priceSegregator';
-import { useRouter } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { setBasketState } from '@/store/eventSlice';
 
 const CreateBasket = () => {
 
@@ -17,33 +18,44 @@ const CreateBasket = () => {
   const [openModal, setOpenModal] = useState(false);
   const props = { openModal, setOpenModal };
 
-  // local state variables
-  const [records, setRecords] = useState([]);
-  const [handleFetch, setHandleFetch] = useState(false);
-
+  const msg1 = "Enter Basket Name and Investment Value";
+  const msg2 = "Add records to the table";
+  
   const dispatch = useDispatch();
-  const router = useRouter();
-
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  
   // redux state variables
   const adminId = useSelector((state) => state.user.username);
   const basketName = useSelector((state) => state.basket.basketName);
-  const basketAmount = useSelector((state) => state.basket.basketAmount);
-
-  // function to handle user mapping
-  const handleMapping = () => {
-    setSaved(false);
-    router.push('/admin/baskets/create/customerMapping');
-  }
+  const basketAmount = useSelector((state) => state.basket.basketAmount);  
+  const basketState = useSelector((state) => state.event.basketState);
+  
+  // local state variables
+  const [records, setRecords] = useState([]);
+  const [handleFetch, setHandleFetch] = useState(false);
+  const [message, setMessage] = useState('');
 
   const [saved, setSaved] = useState('');
   useEffect(() => {
-    console.log(saved);
+    setRecords([]);
+    console.log('cleared');
   }, [saved])
+
+  useEffect(() => {
+    if(basketName !== '' && basketAmount !== ''){
+      setMessage(msg2);
+    }
+    else {
+      setMessage(msg1);
+    }
+  }, [basketAmount, basketName]);
 
   useEffect(() => {
     dispatch(setBasketName(""));
     dispatch(setBasketAmount(""));
     props.setOpenModal("form-elements");
+    console.log(pathname);
   }, [])
 
   useEffect(() => {
@@ -61,6 +73,15 @@ const CreateBasket = () => {
   // getting basket total value
   const [total, setTotal] = useState(0);
   useEffect(()=> {
+
+    // checking url and records to prevent user from navigating
+    if(pathname == '/admin/baskets/create' && records.length !== 0){
+      dispatch(setBasketState(true));
+    }
+    else{
+      dispatch(setBasketState(false));
+    }
+
     let total = 0;
     
     records.forEach((record) => {
@@ -71,12 +92,12 @@ const CreateBasket = () => {
 
     if(total > basketAmount){
       setComparison(false);
-      console.log('hide')
     }
     else{
       setComparison(true);
-      console.log('visible')
     }
+
+    console.log(basketState, records.length);
   }, [records]);
 
 // Conditional rendering for buttons based on comparison and existence of total/basketAmount
@@ -146,7 +167,7 @@ else {
                     setHandleFetch={setHandleFetch}
                   />
                   ))) : <td colSpan="8" style={{ height: '250px', textAlign: 'center' }}>
-                          No table data
+                          {message}
                         </td>  
                   }
                   
@@ -175,15 +196,15 @@ else {
           { comparison && (basketAmount !== '' && basketName !== '')
             ? 
             <>
-              <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button>
+              {/* <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button> */}
               <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
               <SubmitBasket saved={saved} setSaved={setSaved} />
             </>
 
             : <>
-                <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
+                {/* <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
                   <Button disabled className='mr-8'>Map to Customer</Button>
-                </Tooltip>
+                </Tooltip> */}
                 <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
                   <Button disabled className=''>Add Record</Button>
                 </Tooltip>

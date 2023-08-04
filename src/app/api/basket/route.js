@@ -99,6 +99,7 @@ export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, 
 
         if (response.ok) {
             const responseText = await response.text();
+            console.log(responseText);
             return responseText;
         } else {
             const errorText = await response.text();

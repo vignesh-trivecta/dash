@@ -1,14 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Label, Modal, Switch  } from 'flowbite-react';
+import { Button, Label, Modal } from 'flowbite-react';
 import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import { addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
 import { setSelectedStock} from '@/store/addRecordSlice';
-import StockValidity from '@/utils/stockValidity';
-import { segregate } from '@/utils/priceSegregator';
 
 const AddRecord = ({ handleFetch, setHandleFetch }) => {
 
@@ -37,7 +34,6 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
     const [weightage, setWeightage] = useState('');
     const [price, setPrice] = useState('');
     const [exchange, setExchange] = useState('');
-    const [transType, setTransType] = useState('');
     const [orderType, setOrderType] = useState('');
     const [quantity, setQuantity] = useState('');
 
@@ -88,7 +84,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
         console.log(quantity)
     }
 
-    // function to submit the modal 
+    // function to submit the modal values and add record to the table
     const handleSubmit = (e) => {
         e.preventDefault();
         // setRecord({
@@ -121,7 +117,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
     
     return (
     <>
-
+        {/* Add record button */}
         <Button 
         onClick={() => {
             props.setOpenModal('form-elements');
@@ -146,95 +142,95 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
         {/* Modal for entering new record details to add */}
         <Modal show={props.openModal === 'form-elements'}  popup onClose={() => props.setOpenModal(undefined)}>
             <Modal.Header className={toggle ? "bg-orange-500" : "bg-cyan-800"}>
-            
-            <label className="relative inline-flex items-center mb-4 cursor-pointer">
-                <input type="checkbox" value={toggle} onChange={() => {setToggle(!toggle); console.log(toggle)}} className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-300"></div>
-                <span className="ml-3 text-sm font-medium text-white dark:text-gray-300">{toggle ? "SELL" : "BUY"}</span>
-            </label>
+
+                {/* BUY/ SELL toggle */}
+                <label className="relative inline-flex items-center mb-4 cursor-pointer">
+                    <input type="checkbox" value={toggle} onChange={() => {setToggle(!toggle); console.log(toggle)}} className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-300"></div>
+                    <span className="ml-3 text-sm font-medium text-white dark:text-gray-300">{toggle ? "SELL" : "BUY"}</span>
+                </label>
 
             </Modal.Header>
             <Modal.Body>
                 {/* <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-10">Add new record</h3> */}
                 <div className='grid grid-rows-4 grid-cols-3 gap-x- gap-y-4 mt-4'>
-                        <Label htmlFor="stock" value="Stock" className='text-sm' />
-                        <div className=''>
-                            <SearchDropdown id="stock" />
-                        </div>
+                    <Label htmlFor="stock" value="Stock" className='text-sm' />
+                    <div className=''>
+                        <SearchDropdown id="stock" />
+                    </div>
 
-                        {/* Price element */}
-                        <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
-                            <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                            <input disabled id='price' name="price" value={price} type="number" className='absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
-                        </div>
+                    {/* Price element */}
+                    <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
+                        <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                        <input disabled id='price' name="price" value={price} type="number" className='absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
+                    </div>
 
-                        {/* Exchange element */}
-                        <Label value="Exchange" className='col-start-1 row-start-2 text-sm' />
-                        <div className=' col-start-2 row-start-2'>
-                            <input 
-                                id="bse" 
-                                name="exchange" 
-                                type='radio' 
-                                value="BSE"
-                                checked={exchange === "BSE"}
-                                onClick={() => {
-                                handleExchange("BSE");
-                                console.log('bse')
-                            }} />
-                            <label htmlFor='bse' className='ml-1 text-sm'>BSE</label>
-                            <input id="nse" name="exchange" type='radio' value="NSE" className='ml-1' 
-                            checked={exchange === "NSE"}
+                    {/* Exchange element */}
+                    <Label value="Exchange" className='col-start-1 row-start-2 text-sm' />
+                    <div className=' col-start-2 row-start-2'>
+                        <input 
+                            id="bse" 
+                            name="exchange" 
+                            type='radio' 
+                            value="BSE"
+                            checked={exchange === "BSE"}
                             onClick={() => {
-                                handleExchange("NSE");
-                                console.log('nse')
-                            }} />
-                            <label htmlFor='nse' className='ml-1 text-sm'>NSE</label>
-                        </div>
+                            handleExchange("BSE");
+                            console.log('bse')
+                        }} />
+                        <label htmlFor='bse' className='ml-1 text-sm'>BSE</label>
+                        <input id="nse" name="exchange" type='radio' value="NSE" className='ml-1' 
+                        checked={exchange === "NSE"}
+                        onClick={() => {
+                            handleExchange("NSE");
+                            console.log('nse')
+                        }} />
+                        <label htmlFor='nse' className='ml-1 text-sm'>NSE</label>
+                    </div>
+                    
+                    {/* Weightage element */}
+                    <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-sm' />
+                    <div className='rounded-md col-start-2 row-start-3 h-10'>
+                        <input
+                            type='number'
+                            value={weightage}
+                            onChange={handleChange}
+                            className='w-full border border-gray-200 rounded-md'
+                            autoFocus
+                        />
+                    </div>
+
+                    {/* <Label value="Transaction Type" className='col-start-1 row-start-4 text-sm'/> */}
+                    {/* <div className='col-start-2'>
+                        <input id="buy" name="transType" type='radio' value="BUY" checked={transType === "BUY"} onClick={() => dispatch(setTransType("BUY"))} />
+                        <label htmlFor='buy' className='ml-1 text-sm'>BUY</label>
+                        <input id="sell" name="transType" type='radio' value="SELL" className='ml-1' checked={transType === "SELL"} onClick={() => dispatch(setTransType("SELL"))} />
+                        <label htmlFor='sell' className='ml-1 text-sm'>SELL</label>
+                    </div> */}
+
+                    {/* Order Type element */}
+                    <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
+                    <div className='col-start-2'>
+                        <input id="market" name="orderType" type='radio' value="MARKET" checked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
+                        <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
+                        <input id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' checked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
+                        <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
+                    </div>
+
+                    {/* Limit value element */}    
+                    {orderType === "LIMIT" && (   
+                        <span className='relative ml-8'>
+                            <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                            <input id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className='absolute w-32 rounded-md border border-gray-200' />                                             
+                        </span>                             
+                    )}
+
                         
-                        {/* Weightage element */}
-                        <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-sm' />
-                        <div className='rounded-md col-start-2 row-start-3 h-10'>
-                            <input
-                                type='number'
-                                value={weightage}
-                                onChange={handleChange}
-                                className='w-full border border-gray-200 rounded-md'
-                                autoFocus
-                            />
-                        </div>
-
-                        {/* <Label value="Transaction Type" className='col-start-1 row-start-4 text-sm'/> */}
-                        {/* <div className='col-start-2'>
-                            <input id="buy" name="transType" type='radio' value="BUY" checked={transType === "BUY"} onClick={() => dispatch(setTransType("BUY"))} />
-                            <label htmlFor='buy' className='ml-1 text-sm'>BUY</label>
-                            <input id="sell" name="transType" type='radio' value="SELL" className='ml-1' checked={transType === "SELL"} onClick={() => dispatch(setTransType("SELL"))} />
-                            <label htmlFor='sell' className='ml-1 text-sm'>SELL</label>
-                        </div> */}
-
-                        {/* Order Type element */}
-                        <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
-                        <div className='col-start-2'>
-                            <input id="market" name="orderType" type='radio' value="MARKET" checked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
-                            <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
-                            <input id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' checked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
-                            <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
-                        </div>
-                            
-                        {orderType === "LIMIT" && (   
-                            <span className='relative ml-8'>
-                                <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                                <input id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className='absolute w-32 rounded-md border border-gray-200' />                                             
-                            </span>                             
-                        )}
-
-                            
-                        {/* Quantity element */}
-                        <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
-                            <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                            <input id='quantity' name='quantity' value={quantity} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
-                        </div>
-
-
+                    {/* Quantity element */}
+                    <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
+                        <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
+                        <input disabled id='quantity' name='quantity' value={quantity} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
+                    </div>
                 </div>
 
                 {/* Buttons group */}
@@ -257,7 +253,10 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
                             setOrderType('');
                             setToggle(false);
                         }}
-                        className="ml-2 text-md" >Cancel</Button>
+                        className="ml-2 text-md" 
+                    >
+                        Cancel
+                    </Button>
                 </div>
             </Modal.Body>
         </Modal>
