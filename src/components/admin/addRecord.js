@@ -6,11 +6,11 @@ import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
-import { setExchange, setTransType, setOrderType, setPrice, setQuantity, setSelectedStock, setWeightage } from '@/store/addRecordSlice';
+import { setSelectedStock} from '@/store/addRecordSlice';
 import StockValidity from '@/utils/stockValidity';
 import { segregate } from '@/utils/priceSegregator';
 
-const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
+const AddRecord = ({ handleFetch, setHandleFetch }) => {
 
     // modal variables
     const [openModal, setOpenModal] = useState(false);
@@ -20,19 +20,26 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
     // redux state variables
     const dispatch = useDispatch();
     const selectedStock = useSelector((state) => state.add.selectedStock);
-    const weightage = useSelector((state) => state.add.weightage);
+    // const weightage = useSelector((state) => state.add.weightage);
     const basketName = useSelector((state) => state.basket.basketName);
     const basketAmount = useSelector((state) => state.basket.basketAmount);
-    const price = useSelector((state) => state.add.price);
-    const exchange = useSelector((state) => state.add.exchange);
-    // const transType = useSelector((state) => state.add.transType);
-    const orderType = useSelector((state) => state.add.orderType);
-    const quantity = useSelector((state) => state.add.quantity);
+    // const price = useSelector((state) => state.add.price);
+    // const exchange = useSelector((state) => state.add.exchange);
+    // // const transType = useSelector((state) => state.add.transType);
+    // const orderType = useSelector((state) => state.add.orderType);
+    // const quantity = useSelector((state) => state.add.quantity);
     const adminName = useSelector((state) => state.user.username);
     
     // local state variables
     const [toggle, setToggle] = useState(false);
     const [limitPrice, setLimitPrice] = useState(null);
+
+    const [weightage, setWeightage] = useState('');
+    const [price, setPrice] = useState('');
+    const [exchange, setExchange] = useState('');
+    const [transType, setTransType] = useState('');
+    const [orderType, setOrderType] = useState('');
+    const [quantity, setQuantity] = useState('');
 
     // const [fectch, setFetch] = useState(false);
 
@@ -46,10 +53,10 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
 
     // function to handle the exchange radio button
     const handleExchange = (exchange) => {
-        dispatch(setExchange(exchange));
+        (setExchange(exchange));
         const fetchPrice = async () => {
             const data = await getEquityPrice(selectedStock, exchange);
-            dispatch(setPrice(data));
+            (setPrice(data));
             console.log(selectedStock, exchange);
         }
         fetchPrice();
@@ -63,22 +70,23 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
 
     // Event handler
     const handleChange = (e) => {
-    const newValue = (e.target.value);
+        const newValue = (e.target.value);
 
         if(newValue < 1){
-        dispatch(setWeightage(1));
+            setWeightage(1);
         }
         else{
-        dispatch(setWeightage(newValue));
+            setWeightage(newValue);
         }
         quantityAPI();
     };
 
-  // //function to get the quantity of stocks based on weightage
-  const quantityAPI = async () => {
-      const quantity = await sendWeightage(weightage, basketAmount, price);
-      dispatch(setQuantity(quantity));
-  }
+    //function to get the quantity of stocks based on weightage
+    const quantityAPI = async () => {
+        const quantity = await sendWeightage(weightage, basketAmount, price);
+        (setQuantity(quantity));
+        console.log(quantity)
+    }
 
     // function to submit the modal 
     const handleSubmit = (e) => {
@@ -101,15 +109,16 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
         const postData = async() => {
             const transType = toggle ? "SELL" : "BUY";
             const data = await addRecord(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount);
+            console.log(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount)
             if(data.status == 200){
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
             }
         }
         postData();
+        (setWeightage(''));
     }
     
-
     return (
     <>
 
@@ -117,12 +126,18 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
         onClick={() => {
             props.setOpenModal('form-elements');
             dispatch(setSelectedStock(''));
-            dispatch(setExchange(''));
-            dispatch(setPrice(''));
-            dispatch(setWeightage(null));
-            dispatch(setQuantity(''));
-            dispatch(setOrderType(''));
-            dispatch(setTransType(''));
+            // dispatch(setExchange(''));
+            // dispatch(setPrice(null));
+            // dispatch(setWeightage(null));
+            // dispatch(setQuantity(null));
+            // dispatch(setOrderType(''));
+            // dispatch(setTransType(''));
+            setWeightage('');
+            setPrice('');
+            setQuantity('');
+            setExchange('');
+            setOrderType('');
+            setToggle(false);
         }}
         >
             Add Record
@@ -199,9 +214,9 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
                         {/* Order Type element */}
                         <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
                         <div className='col-start-2'>
-                            <input id="market" name="orderType" type='radio' value="MARKET" checked={orderType === "MARKET"} onClick={() => dispatch(setOrderType("MARKET"))} />
+                            <input id="market" name="orderType" type='radio' value="MARKET" checked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
                             <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
-                            <input id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' checked={orderType === "LIMIT"} onClick={() => dispatch(setOrderType("LIMIT"))} />
+                            <input id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' checked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
                             <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
                         </div>
                             
@@ -216,7 +231,7 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
                         {/* Quantity element */}
                         <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
                             <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                            <input disabled id='quantity' name='quantity' value={segregate(quantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
+                            <input id='quantity' name='quantity' value={quantity} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
                         </div>
 
 
@@ -229,12 +244,18 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
                         onClick={() => {
                             props.setOpenModal(undefined);
                             dispatch(setSelectedStock(''));
-                            dispatch(setExchange(''));
-                            dispatch(setPrice(''));
-                            dispatch(setWeightage(''));
-                            dispatch(setQuantity(''));
-                            dispatch(setTransType(''));
-                            dispatch(setOrderType(''));
+                            // dispatch(setExchange(''));
+                            // dispatch(setPrice(null));
+                            // dispatch(setWeightage(null));
+                            // dispatch(setQuantity(null));
+                            // dispatch(setTransType(''));
+                            // dispatch(setOrderType(''));
+                            setWeightage('');
+                            setPrice('');
+                            setQuantity('');
+                            setExchange('');
+                            setOrderType('');
+                            setToggle(false);
                         }}
                         className="ml-2 text-md" >Cancel</Button>
                 </div>
