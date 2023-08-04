@@ -2,11 +2,9 @@
 
 import AddRecord from '@/components/admin/addRecord';
 import React, { useEffect, useState } from 'react';
-import { Button, Label, Modal, Toast, Tooltip } from 'flowbite-react';
+import { Button, Tooltip } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBasketAmount, setBasketName } from '@/store/basketSlice';
-import BasketName from '@/utils/basketName';
-import BasketAmount from '@/utils/basketAmount';
 import { getRecords } from '@/app/api/basket/route';
 import BasketRecords from '@/components/admin/basketRecords';
 import SubmitBasket from '@/components/admin/submitBasket';
@@ -58,7 +56,7 @@ const CreateBasket = () => {
 
   // comparison to check whether basketVal is greater than investmentVal
   const [comparison, setComparison] = useState(true);
-  const investmentVal = segregate(basketAmount);   // formatting input amount
+  const investmentVal = basketAmount.toString();   // formatting input amount
   
   // getting basket total value
   const [total, setTotal] = useState(0);
@@ -95,18 +93,22 @@ else {
   const basketVal = segregate(total);
 
   return (
-    <div className='container mx-auto my-8' style={{width: '90%'}}>
+    <div className='container mx-auto mt-4' style={{width: '90%'}}>
       <h3 className='mb-2 font-bold'>Create new Basket</h3>
       
       {/* Investment details row */}
-      <div className="flex justify-between mb-2">
+      <div className="flex justify-between">
         <div className="flex items-center">
           <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
           <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 rounded-lg w-44" />
         </div>
         <div className="flex items-center">
           <label className="text-black text-sm dark:text-white mr-2">Investment</label>
-          <input type="text" value={investmentVal} onChange={(e) => {dispatch(setBasketAmount(e.target.value))}} className="border border-gray-200 rounded-lg w-44" />
+          <input type="text" value={segregate(investmentVal)} onChange={(e) => {
+                // Remove commas from the input value before updating state
+                const newValue = e.target.value.replace(/,/g, "");
+                dispatch(setBasketAmount(newValue));
+          }} className="border border-gray-200 rounded-lg w-44" />
         </div>
         <div className="flex items-center">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value</p>
@@ -116,7 +118,7 @@ else {
           
 
       {/* Table showing Create Basket Records */}
-      <div className='flex'>
+      <div className='flex mt-8'>
         <div className={isTableEmpty ? '' : 'overflow-y-scroll'}  style={{ height: '300px' }}>
           <table className='table-fixed w-full border' >
             <thead className='sticky top-0 border bg-gray-50' >
@@ -156,8 +158,6 @@ else {
 
       
       <div className='flex justify-between'>
-        
-        {/* Message Box */}
         <div className=''>
             {/* <Label htmlFor='quantity' value="Message" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' /> */}
             { saved !== ''
@@ -167,9 +167,10 @@ else {
                 : <div className='p-2 mt-2 text-green-600'><p>Basket Value higher than Investment. Delete some records!</p></div>
             }
         </div>
-
-        {/* Buttons Component */}
         <div className='flex justify-end items-center mt-8'>
+
+          {/* Buttons Component */}
+          
           {/* Conditional rendering based on comparison and records.length */}
           { comparison && (basketAmount !== '' && basketName !== '')
             ? 
@@ -180,20 +181,20 @@ else {
             </>
 
             : <>
-                <Tooltip content="Enter Basket name and Investment amount!">
+                <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
                   <Button disabled className='mr-8'>Map to Customer</Button>
                 </Tooltip>
-                <Tooltip content="Enter Basket name and Investment amount!">
+                <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
                   <Button disabled className=''>Add Record</Button>
                 </Tooltip>
-                <Tooltip content="Enter Basket name and Investment amount!">
+                <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
                   <Button disabled className='ml-8'>Save</Button>
                 </Tooltip>
               </>
           }
+
         </div>
       </div>
-      
     </div>
   )
 }

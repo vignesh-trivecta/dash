@@ -1,18 +1,19 @@
 'use client';
+
 import { Fragment, useState } from "react"
 import { Combobox, Transition } from "@headlessui/react"
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid"
 import { getInstrumentDetails } from "@/app/api/basket/route"
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedStock } from "@/store/addRecordSlice";
+import { setSelectedStock } from "@/store/updateRecordSlice";
 
 export default function UpdateSearchDropdown ({ instrumentName, id }) {
   const [stocksList, setStocksList] = useState([]);
   const [query, setQuery] = useState("");
 
   const dispatch = useDispatch();
-  const selectedStock = useSelector((state) => state.add.selectedStock);
+  const selectedStock = useSelector((state) => state.update.selectedStock);
 
   const [localStock, setLocalStock] = useState(instrumentName);
 

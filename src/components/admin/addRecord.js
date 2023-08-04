@@ -5,7 +5,6 @@ import { Button, Label, Modal, Switch  } from 'flowbite-react';
 import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import Weightage from '@/utils/weightage';
 import { addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
 import { setExchange, setTransType, setOrderType, setPrice, setQuantity, setSelectedStock, setWeightage } from '@/store/addRecordSlice';
 import StockValidity from '@/utils/stockValidity';
@@ -148,12 +147,13 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
                             <SearchDropdown id="stock" />
                         </div>
 
+                        {/* Price element */}
                         <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
                             <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
                             <input disabled id='price' name="price" value={price} type="number" className='absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
                         </div>
 
-
+                        {/* Exchange element */}
                         <Label value="Exchange" className='col-start-1 row-start-2 text-sm' />
                         <div className=' col-start-2 row-start-2'>
                             <input 
@@ -195,6 +195,8 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
                             <input id="sell" name="transType" type='radio' value="SELL" className='ml-1' checked={transType === "SELL"} onClick={() => dispatch(setTransType("SELL"))} />
                             <label htmlFor='sell' className='ml-1 text-sm'>SELL</label>
                         </div> */}
+
+                        {/* Order Type element */}
                         <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
                         <div className='col-start-2'>
                             <input id="market" name="orderType" type='radio' value="MARKET" checked={orderType === "MARKET"} onClick={() => dispatch(setOrderType("MARKET"))} />
@@ -219,6 +221,8 @@ const AddRecord = ({ instrumentName, handleFetch, setHandleFetch }) => {
 
 
                 </div>
+
+                {/* Buttons group */}
                 <div className="flex justify-end mt-4">
                     <button type='submit' onClick={handleSubmit} className={`${toggle ? "bg-orange-500 hover:bg-orange-600" : "bg-cyan-800 hover:bg-cyan-700"} border p-2 rounded-md text-white w-20`}>Add</button>
                     <Button color="gray"                
