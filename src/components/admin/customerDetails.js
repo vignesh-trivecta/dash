@@ -9,6 +9,7 @@ const CustomerDetails = () => {
 
     const loggedIn = useSelector((state) => state.user.loggedIn);
     const [ customers, setCustomers ] = useState([]);
+
     useEffect(() => {
         const fetchData = async () => {
           const customersData = await getCustomers();
@@ -20,44 +21,54 @@ const CustomerDetails = () => {
       }, []);      
 
     return(
-       <div className="container">
+       <div className='container mx-auto mt-4' style={{width: '90%'}}>
 
             <h5 className="font-bold">Customer Details</h5>
 
             {/* Customer Details table */}
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left text-gray-900 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                S.No
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Name
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Email
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Contact
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <div className='flex mt-10'>
+        <div className={'overflow-y-scroll'} >
+          <table className='table-fixed w-full border' >
+            <thead className='sticky top-0 border bg-gray-50' >
+              <tr>
+                <th className='text-left font-medium text-sm p-2' style={{width:'8%'}}>S.No</th>
+                <th className='text-left font-medium text-sm p-2'>Customer ID</th>
+                <th className='text-left font-medium text-sm '>Name</th>
+                <th className='text-left font-medium text-sm'>Contact 1</th>
+                <th className='text-left font-medium text-sm'>Contact 2</th>
+                <th className='text-center font-medium text-sm'>Email</th>
+
+              </tr>
+            </thead>
+              <tbody>
                         {customers?.map((data, index) => {
                             return (
                                 <tr key={index} className="bg-white border dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                                    <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                        {index+1}
+                                    <th className="text-left text-sm text-black ">
+                                        <div className="ml-4">
+                                            {index+1}
+                                        </div>
+                                    </th>
+                                    <td className="p-2 text-sm text-black">
+                                        {data.customerId}
                                     </td>
-                                    <td className="px-6 py-4">
-                                        {data.name}
+                                    <td className="p-2 text-sm text-black">
+                                        <div className="-ml-2">
+                                            {data.name}
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="p-2 text-sm text-black">
+                                    <div className="-ml-2">
+                                            {data.contactOne}
+                                        </div>
+                                    </td>
+                                    <td className="p-2 text-sm text-black">
+                                    <div className="-ml-2">
+                                            {data.contactTwo}
+                                        </div>
+                                    </td>
+                                    <td className="p-2 text-sm text-black">
                                         {data.email}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {data.contactOne}
                                     </td>
                                 </tr>
                             )
@@ -65,6 +76,7 @@ const CustomerDetails = () => {
                     </tbody>
                 </table>
             </div>
+        </div>
         </div>
     );
 };

@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { setUsername, setEmail, setPhone, setLoggedIn } from "@/store/userSlice";
 import { Label, TextInput } from 'flowbite-react';
 import { loginAPI } from "@/app/api/login";
+import Link from "next/link";
 
 const LoginAuth = () => {
 
@@ -262,9 +263,12 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                                 />
                             </div>
                             <p className="error text-red-500" style={{fontSize: '12px'}}>
-                                {errors.captcha && touched.captcha && errors.captcha}
+                              {errors.captcha && touched.captcha && errors.captcha}
                             </p>
 
+                            <div>
+                              <Link href="#" className="underline text-xs text-blue-500">Forgot password?</Link>
+                            </div>
 
                             <div className="flex justify-center mt-4">
                                 <button type="submit" className="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">

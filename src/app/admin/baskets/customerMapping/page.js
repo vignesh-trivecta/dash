@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, Fragment } from "react";
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { getCustomers } from "@/app/api/basket/route";
-import { Button, Modal, Toast } from "flowbite-react";
-import { HiCheck } from "react-icons/hi";
+import { getBasketList, getCustomers } from "@/app/api/basket/route";
+import { Alert, Button, Modal, Toast } from "flowbite-react";
+import { HiCheck, HiCheckCircle } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import { Listbox, Transition } from '@headlessui/react';
 import { setBasketAmount, setBasketBroker, setBasketName } from '@/store/basketSlice'
@@ -24,6 +24,7 @@ const CustomerMapping = () => {
     const [weblink, setWeblink] = useState(false);
     const [message, setMessage] = useState(false);
     const [selected, setSelected] = useState(broker[0]);
+    const [records, setRecords] = useState([]);
 
     const basketName = useSelector((state) => state.basket.basketName);
     
@@ -48,14 +49,23 @@ const CustomerMapping = () => {
         };
       
         fetchData();
-    }, []);   
+    }, []); 
+    
+    // useEffect to fetch the view table baskets
+    useEffect(() => {
+        const fetchBaskets = async() => {
+        const response = await getBasketList();
+        setRecords(response);
+        }
+        fetchBaskets();
+    }, [])
       
     if(weblink){
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
         setTimeout(() => {
             setWeblink(false);
-            router.push("/admin/baskets/create");
+            // router.push("/admin/baskets/create");
         }, 3000)
     }
 
@@ -64,17 +74,27 @@ const CustomerMapping = () => {
         dispatch(setBasketName(''));
         setTimeout(() => {
             setMessage(false);
-            router.push("/admin/baskets/create");
+            // router.push("/admin/baskets/create");
         }, 3000)
     }
 
     return(
-       <div className="container">
+        <div className='container mx-auto mt-4' style={{width: '90%'}}>
 
-            <h5 className="font-semibold mb-4">Map {basketName} to a customer</h5>
+            <h5 className="font-bold mb-4">Map Basket</h5>
+            {/* Basket Names listbox */}
+            <div className="">
+                <p className="text-black text-sm dark:text-white mr-2">Select Basket</p>
+                <select name="transactionType" id="transactionType" className='border border-gray-200 rounded-md w-44 h-10'>
+                    {records.map((record) => {
+                        return <option value={record.basketName} selected>{record.basketName}</option>
+                    })}
+                </select> 
+            </div>
 
+            <h3 className="mt-4 text-sm">Select Customer</h3>
             {/* Customer Details table */}
-            <div className="overflow-x-auto overflow-y-scroll">
+            {/* <div className="overflow-x-auto overflow-y-scroll">
                 <table className="table-fixed w-full border">
                     <thead className="sticky top-0 border bg-gray-50">
                         <tr>
@@ -91,12 +111,23 @@ const CustomerMapping = () => {
                                 Contact
                             </th>
                         </tr>
+                    </thead> */}
+                <div className='flex flex-col'>
+                <div className={'overflow-y-scroll border'}  style={{ height: '250px' }}>
+                <table className='table-fixed w-full overflow-y-scroll' >
+                    <thead className='sticky top-0 bg-gray-50' >
+                    <tr>
+                        <th className='text-left font-medium text-sm p-2'>&nbsp;</th>
+                        <th className='font-medium text-sm text-left' >Name</th>
+                        <th className='font-medium text-left text-sm'>Email</th>
+                        <th className='font-medium text-left text-sm'>Contact</th>
+                    </tr>
                     </thead>
                     <tbody>
                         {customers?.map((data, index) => {
                             return (
-                                <tr key={index} className='border hover:bg-gray-50'>
-                                    <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                <tr key={index} className='border-t border-b hover:bg-gray-50'>
+                                    <td className="p-2 font-medium text-gray-900 dark:text-white">
                                         <input type="radio" name="customer" value={index} id={`customer_${index}`} />
                                     </td>
                                     <td className="text-sm text-left text-black">
@@ -192,36 +223,45 @@ const CustomerMapping = () => {
             </div>
             {
                 weblink 
-                ?   <Toast className="absolute bottom-0 left-2 bg-green-400">
-                        <div className='flex items-center'>
-                        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-green-500 dark:bg-green-800 dark:text-green-200">
-                            <HiCheck className="h-5 w-5" />
-                        </div>
-                        <div className="ml-3 text-sm font-normal text-white">
+                ?   
+                    <Alert
+                    className="absolute bottom-0 left-2 bg-green-200 text-green-500"
+                    icon={HiCheckCircle}
+                    rounded
+                    >
+                        <span className='w-4 h-4 text-green-500'>
                             Weblink sent successfully! 
-                            
-                        </div>
-                        </div>
-                        <Toast.Toggle className='bg-green-400 text-white'/>
-                    </Toast>
+                        </span>
+                    </Alert>
                 :   <></>
             }
             {
                 message 
-                ?   <Toast className="absolute bottom-0 left-2 bg-green-400">
-                        <div className='flex items-center'>
-                        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-green-500 dark:bg-green-800 dark:text-green-200">
-                            <HiCheck className="h-5 w-5" />
-                        </div>
-                        <div className="ml-3 text-sm font-normal text-white">
-                            Basket mapped successfully! 
+                ?   
+                <Alert
+                className="absolute bottom-0 left-2 bg-green-200 text-green-500"
+                icon={HiCheckCircle}
+                rounded
+                >
+                    <span className='w-4 h-4 text-green-500'>
+                        Basket mapped successfully!
+                    </span>
+                </Alert>
+                // <Toast className="absolute bottom-0 left-2 bg-green-400">
+                //         <div className='flex items-center'>
+                //         <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-green-500 dark:bg-green-800 dark:text-green-200">
+                //             <HiCheck className="h-5 w-5" />
+                //         </div>
+                //         <div className="ml-3 text-sm font-normal text-white">
+                //             Basket mapped successfully! 
                             
-                        </div>
-                        </div>
-                        <Toast.Toggle className='bg-green-400 text-white'/>
-                    </Toast>
+                //         </div>
+                //         </div>
+                //         <Toast.Toggle className='bg-green-400 text-white'/>
+                //     </Toast>
                 :   <></>
             }
+        </div>
         </div>
     );
 };

@@ -29,7 +29,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
     
     // local state variables
     const [toggle, setToggle] = useState(false);
-    const [limitPrice, setLimitPrice] = useState(null);
+    const [limitPrice, setLimitPrice] = useState('');
 
     const [weightage, setWeightage] = useState('');
     const [price, setPrice] = useState('');
@@ -104,8 +104,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
         // the response received needs to be mapped to Table
         const postData = async() => {
             const transType = toggle ? "SELL" : "BUY";
-            const data = await addRecord(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount);
-            console.log(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount)
+            const data = await addRecord(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount, limitPrice);
             if(data.status == 200){
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
@@ -141,14 +140,14 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
 
         {/* Modal for entering new record details to add */}
         <Modal show={props.openModal === 'form-elements'}  popup onClose={() => props.setOpenModal(undefined)}>
-            <Modal.Header className={toggle ? "bg-orange-500" : "bg-cyan-800"}>
+            <Modal.Header >
 
-                {/* BUY/ SELL toggle */}
+                {/* BUY/ SELL toggle
                 <label className="relative inline-flex items-center mb-4 cursor-pointer">
                     <input type="checkbox" value={toggle} onChange={() => {setToggle(!toggle); console.log(toggle)}} className="sr-only peer" />
                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-300"></div>
                     <span className="ml-3 text-sm font-medium text-white dark:text-gray-300">{toggle ? "SELL" : "BUY"}</span>
-                </label>
+                </label> */}
 
             </Modal.Header>
             <Modal.Body>
@@ -248,6 +247,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
                             // dispatch(setOrderType(''));
                             setWeightage('');
                             setPrice('');
+                            setLimitPrice('');
                             setQuantity('');
                             setExchange('');
                             setOrderType('');

@@ -1,21 +1,26 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { Button, Label, Modal } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getEquityPrice, sendWeightage, updateRecordAPI } from '@/app/api/basket/route';
+import { getEquityPrice, sendWeightage, updateRecordAPI, updateRecordMainAPI } from '@/app/api/basket/route';
 // import UpdateSearchDropdown from '@/utils/updateSearchDropdown';
 import Link from 'next/link';
 import { segregate } from '@/utils/priceSegregator';
 import { setSelectedStock } from '@/store/addRecordSlice';
 import { Combobox, Transition } from "@headlessui/react"
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid"
-import { getInstrumentDetails } from "@/app/api/basket/route"
+import { getInstrumentDetails } from "@/app/api/basket/route";
+import { usePathname, useSearchParams } from 'next/navigation';
 
 
-const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, weightage, price, quantity, handleFetch, setHandleFetch }) => {
+const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, weightage, price, quantity, handleFetch, setHandleFetch, mainBasketName }) => {
 
+    console.log(recId, instrumentName, exchange, transType, orderType, weightage, price, quantity, handleFetch, setHandleFetch, mainBasketName)
     // modal state
     const [openModal, setOpenModal] = useState(false);
     const props = { openModal, setOpenModal };
+
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
     
     // redux store variables
     const dispatch = useDispatch();
@@ -73,9 +78,19 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     const handleUpdate = () => {
         const localtransType = toggle;
         const postDataAPI = async() => {
-            const data = await updateRecordAPI(recId, basketName, adminId, selectedStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, basketAmount);
-            setHandleFetch(!handleFetch);
-            props.setOpenModal(undefined);
+            if(pathname == '/admin/baskets/create'){
+                console.log('temp')
+                const data = await updateRecordAPI(recId, basketName, adminId, selectedStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, basketAmount);
+                setHandleFetch(!handleFetch);
+                props.setOpenModal(undefined);
+            }
+            else{
+                console.log('main')
+                console.log(recId, mainBasketName, adminId, selectedStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, basketAmount)
+                const data = await updateRecordMainAPI(recId, mainBasketName, adminId, selectedStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, basketAmount);
+                setHandleFetch(!handleFetch);
+                props.setOpenModal(undefined);
+            }
         }
         postDataAPI();
     }
@@ -158,13 +173,13 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
         onClose={() => {
             props.setOpenModal(undefined);
         }}>
-            <Modal.Header className={toggle == "SELL" ? "bg-orange-500" : "bg-cyan-800"}>
+            <Modal.Header >
                     
-                <label className="relative inline-flex items-center mb-4 cursor-pointer">
+                {/* <label className="relative inline-flex items-center mb-4 cursor-pointer">
                     <input type="checkbox" value={toggle} onClick={handleTransType} className="sr-only peer" />
                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-gray-300"></div>
                     <span className="ml-3 text-sm font-medium text-white dark:text-gray-300">{toggle}</span>
-                </label>
+                </label> */}
 
             </Modal.Header>            
             <Modal.Body>

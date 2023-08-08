@@ -2,28 +2,33 @@
 
 import AddRecord from '@/components/admin/addRecord';
 import React, { useEffect, useState } from 'react';
-import { Button, Tooltip } from 'flowbite-react';
+import { Alert, Button, Tooltip } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBasketAmount, setBasketName } from '@/store/basketSlice';
-import { getRecords } from '@/app/api/basket/route';
+import { basketNameCheck, getRecords } from '@/app/api/basket/route';
 import BasketRecords from '@/components/admin/basketRecords';
 import SubmitBasket from '@/components/admin/submitBasket';
 import { segregate } from '@/utils/priceSegregator';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { setBasketState } from '@/store/eventSlice';
+import { HiInformationCircle, HiCheck, HiCheckCircle } from 'react-icons/hi';
 
 const CreateBasket = () => {
 
   // modal variables
-  const [openModal, setOpenModal] = useState(false);
-  const props = { openModal, setOpenModal };
+  // const [openModal, setOpenModal] = useState(false);
+  // const props = { openModal, setOpenModal };
 
   const msg1 = "Enter Basket Name and Investment Value";
   const msg2 = "Add records to the table";
+  const msg3 = "Basket name exists!";
+  const msg4 = "Basket Saved Successfully!";
+
+  let [namecheck, setNameCheck] = useState(true);
   
   const dispatch = useDispatch();
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   
   // redux state variables
   const adminId = useSelector((state) => state.user.username);
@@ -36,12 +41,13 @@ const CreateBasket = () => {
   const [handleFetch, setHandleFetch] = useState(false);
   const [message, setMessage] = useState('');
 
-  const [saved, setSaved] = useState('');
+  // useEffect for getting records after basket save clicked
+  const [saved, setSaved] = useState(false);
   useEffect(() => {
-    setRecords([]);
-    console.log('cleared');
+    setMessage(msg4);
   }, [saved])
 
+  // useEffect to set the message at center of table
   useEffect(() => {
     if(basketName !== '' && basketAmount !== ''){
       setMessage(msg2);
@@ -51,13 +57,23 @@ const CreateBasket = () => {
     }
   }, [basketAmount, basketName]);
 
+  // useEffect to check the basketname
+  useEffect(() => {
+    const check = async () => {
+      const response = await basketNameCheck(basketName);
+      setNameCheck(response);
+    }
+    check();
+  }, [basketName])
+
+  // useEffect to clear the basket name and amount
   useEffect(() => {
     dispatch(setBasketName(""));
     dispatch(setBasketAmount(""));
-    props.setOpenModal("form-elements");
-    console.log(pathname);
+    // props.setOpenModal("form-elements");
   }, [])
 
+  // useffect for add record, update record, delete record
   useEffect(() => {
   const fetchData = async () => {
     const response = await getRecords(adminId, basketName);
@@ -96,8 +112,6 @@ const CreateBasket = () => {
     else{
       setComparison(true);
     }
-
-    console.log(basketState, records.length);
   }, [records]);
 
 // Conditional rendering for buttons based on comparison and existence of total/basketAmount
@@ -119,19 +133,47 @@ else {
       
       {/* Investment details row */}
       <div className="flex justify-between">
-        <div className="flex items-center">
-          <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
-          <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 rounded-lg w-44" />
-        </div>
-        <div className="flex items-center">
-          <label className="text-black text-sm dark:text-white mr-2">Investment</label>
+        {
+          namecheck 
+          ? (
+            <div className="flex flex-col items-center">
+              <div className="flex flex-col items-left">
+                <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
+                <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 rounded-lg w-44" />
+              </div>
+              <div className='ml-8 mt-2'>
+                <p className='text-xs text-red-500'><div>&nbsp;</div></p>
+              </div>
+            </div>)
+          : (
+            <div className="flex flex-col items-start">
+              <div className="flex flex-col items-left">
+                <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
+                <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 focus:border-red-500 focus:ring-0 rounded-lg w-44" />
+              </div>
+              <div className='mt-2'>
+                <p className='text-xs text-red-600'><div>{msg3}</div></p>
+              </div>
+            </div>)
+        }
+        <div className="flex flex-col items-left mb-6">
+          <label className="text-black text-sm dark:text-white">Investment</label>
           <input type="text" value={segregate(investmentVal)} onChange={(e) => {
-                // Remove commas from the input value before updating state
-                const newValue = e.target.value.replace(/,/g, "");
-                dispatch(setBasketAmount(newValue));
+            // Remove commas from the input value before updating state
+            const newValue = e.target.value.replace(/,/g, "");
+            dispatch(setBasketAmount(newValue));
           }} className="border border-gray-200 rounded-lg w-44" />
         </div>
-        <div className="flex items-center">
+
+        {/* Basket Type listbox */}
+        <div className="">
+          <p className="text-black text-sm dark:text-white mr-2">Transaction Type</p>
+          <select name="transactionType" id="transactionType" className='border border-gray-200 rounded-md w-32'>
+            <option value="BUY" selected>BUY</option>
+            <option value="SELL">SELL</option>
+          </select> 
+      </div>
+        <div className="flex flex-col items-left mb-6">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value</p>
           <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
         </div>
@@ -139,17 +181,18 @@ else {
           
 
       {/* Table showing Create Basket Records */}
-      <div className='flex mt-8'>
-        <div className={isTableEmpty ? '' : 'overflow-y-scroll'}  style={{ height: '300px' }}>
-          <table className='table-fixed w-full border' >
-            <thead className='sticky top-0 border bg-gray-50' >
+      <div className='flex mt-2'>
+        <div className={'overflow-y-scroll border'}  style={{ height: '300px' }}>
+          <table className='table-fixed w-full' >
+            <thead className='sticky top-0 bg-gray-50' >
               <tr>
-                <th className='font-medium text-sm p-2'>S.No</th>
-                <th className='font-medium text-sm text-left' style={{width: '25%'}}>Stock</th>
+                <th className='text-left font-medium text-sm p-2'>S.No</th>
+                <th className='font-medium text-sm text-left' style={{width: '25%'}}>Scripts</th>
                 <th className='font-medium text-sm'>Exchange</th>
-                <th className='font-medium text-sm'>Transaction</th>
+                <th className='font-medium text-sm'>Order Type</th>
                 <th className='text-right font-medium text-sm'>Weights&nbsp;%</th>
                 <th className='text-right font-medium text-sm'>Price &#8377;</th>
+                <th className='text-right font-medium text-sm'>Limit Price &#8377;</th>
                 <th className='text-right font-medium text-sm'>Quantity</th>
                 <th className='font-medium text-sm'>Actions</th>
               </tr>
@@ -167,7 +210,7 @@ else {
                     setHandleFetch={setHandleFetch}
                   />
                   ))) : <td colSpan="8" style={{ height: '250px', textAlign: 'center' }}>
-                          {message}
+                          
                         </td>  
                   }
                   
@@ -177,45 +220,69 @@ else {
         </div>
       </div>
 
-      
-      <div className='flex justify-between'>
-        <div className=''>
-            {/* <Label htmlFor='quantity' value="Message" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' /> */}
-            { saved !== ''
-            ? <div className='p-2 mt-2 text-green-600' dangerouslySetInnerHTML={{ __html: saved }} />
-            : comparison 
-                ? (<div className='p-2 mt-2 text-green-600'>{isButtonDisabled ? <p>Add records to the basket!</p> : <p>Enter Basket name and Investment amount!</p> }</div>) 
-                : <div className='p-2 mt-2 text-green-600'><p>Basket Value higher than Investment. Delete some records!</p></div>
-            }
-        </div>
-        <div className='flex justify-end items-center mt-8'>
+        <div className='flex justify-between items-center mt-2'>
 
           {/* Buttons Component */}
+      
+            {
+            (message !== msg4) 
+              ? 
+                <div>
+                  <Alert
+                    color="warning"
+                    icon={HiInformationCircle}
+                    rounded
+                  >
+                    <span className='w-4 h-4'>
+                      {message}
+                    </span>
+                  </Alert>
+                </div>
+              :
+                <div>
+                  <Alert
+                    className='bg-green-200 text-green-500'
+                    icon={HiCheckCircle}
+                    rounded
+                  >
+                    <span className='w-4 h-4 text-green-500'>
+                      {message}
+                    </span>
+                  </Alert>
+                </div>  
+            }
+          
           
           {/* Conditional rendering based on comparison and records.length */}
           { comparison && (basketAmount !== '' && basketName !== '')
             ? 
-            <>
+            <div className='flex justify-center'>
               {/* <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button> */}
-              <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
-              <SubmitBasket saved={saved} setSaved={setSaved} />
-            </>
+              <div>
+                <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
+              </div>
+              <div>
+                <SubmitBasket saved={saved} setSaved={setSaved} />              
+              </div>
+            </div>
 
-            : <>
+            : <div className='flex justify-center'>
                 {/* <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
                   <Button disabled className='mr-8'>Map to Customer</Button>
                 </Tooltip> */}
+                
                 <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
                   <Button disabled className=''>Add Record</Button>
                 </Tooltip>
                 <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
                   <Button disabled className='ml-8'>Save</Button>
                 </Tooltip>
-              </>
+              </div>
           }
 
         </div>
-      </div>
+
+
     </div>
   )
 }

@@ -3,12 +3,12 @@ import UpdateRecord from './updateRecord';
 import { segregate } from '@/utils/priceSegregator';
 import DeleteRecord from './deleteRecord';
 
-const BasketRecords = ({ record, index, handleFetch, setHandleFetch }) => {
-
+const BasketRecords = ({ record, index, handleFetch, setHandleFetch, basketName }) => {
+  console.log(basketName)
   return (
-    <tr className='border hover:bg-gray-50'>
-      <th>
-        <div className='text-sm text-black'>{index+1}</div>
+    <tr className='border-t border-b hover:bg-gray-50'>
+      <th className='text-left'>
+        <div className='ml-4 text-sm text-black'>{index+1}</div>
       </th>
       <td className='text-left'>
         <div className='text-sm text-black'>{record.instrumentName}</div>
@@ -16,19 +16,22 @@ const BasketRecords = ({ record, index, handleFetch, setHandleFetch }) => {
       <td className='text-center'>
         <div className='text-sm text-black'>{record.exchangeUsed}</div>
       </td>
-      <td className='text-center'>
-        <div className='text-sm text-black'>{record.transType}</div>
+      <td className='text-left'>
+        <div className='text-sm text-black ml-4'>{record.orderType}</div>
       </td>
-      <td className='text-right'>
+      <td className='text-right mr-4'>
         <div className='text-sm text-black'>{record.weightValue}</div>              
       </td>
       <td className='text-right'>
         <div className='text-sm text-black'>{segregate(record.priceValue)}</div>
       </td>
       <td className='text-right'>
+        <div className='text-sm text-black'>{segregate(record.limitPrice)}</div>
+      </td>
+      <td className='text-right'>
         <div className='text-sm text-black'>{segregate(record.quantityValue)}</div>
       </td>
-      <td className="px-6 py-4 flex gap-2 ml-4">
+      <td className="p-2 flex gap-2 ml-4">
         < UpdateRecord 
           recId={record.recId} 
           instrumentName={record.instrumentName} 
@@ -37,9 +40,11 @@ const BasketRecords = ({ record, index, handleFetch, setHandleFetch }) => {
           orderType={record.orderType}
           weightage={record.weightValue}
           price={record.priceValue}
+          limitPrice={record.limitPrice}
           quantity={record.quantityValue}
           handleFetch={handleFetch} 
           setHandleFetch={setHandleFetch}
+          mainBasketName={basketName}
         />
 
         < DeleteRecord 

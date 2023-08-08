@@ -9,8 +9,9 @@ import {
   HiPencilAlt,
   HiUserGroup,
 } from "react-icons/hi";
+// import { SlBasketLoaded } from "react-icons/sl";
 import { CgFileDocument } from "react-icons/cg";
-import { AiOutlineFolderView } from "react-icons/ai";
+import { AiOutlineFolderView, AiOutlineUserAdd } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
@@ -36,49 +37,50 @@ const ExampleSidebar = function () {
   const pageNavigator = () => {
     switch(tab) {
       case 1:
-        dispatch(setBasketAmount(''));
-        dispatch(setBasketName(''));
         router.push('/admin/dashboard');
-        return;
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
+        break;
       case 2:
-        dispatch(setBasketAmount(''));
-        dispatch(setBasketName(''));
         router.push('/admin/customers');
-        return;
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
+        break;
       case 3:
-        dispatch(setBasketAmount(''));
-        dispatch(setBasketName(''));
         router.push('/admin/baskets/create');
-        return;
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
+        break;
       case 4:
-        dispatch(setBasketAmount(''));
-        dispatch(setBasketName(''));
         router.push('/admin/baskets/view');
-        return;
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
+        break;
       case 5:
+        router.push('/admin/baskets/create#');
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
-        router.push('/admin/baskets/create#');
-        return;
+        break;
       case 6:
+        router.push('/admin/baskets/create#');
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
-        router.push('/admin/baskets/create#');
-        return;
+        break;
       case 7:
+        router.push('/admin/baskets/create#');
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
-        router.push('/admin/baskets/create#');
-        return;
+        break;
       default:
         return null
     }
+    setOpen(false);
   }
 
   useEffect(() => {
     const newPage = window.location.pathname;
     setCurrentPage(newPage);
-  }, [setCurrentPage]);
+  }, [currentPage]);
 
   useEffect(() => {
     setIsLinkDisabled(basketState);
@@ -135,17 +137,17 @@ const ExampleSidebar = function () {
                   <div className="bg-gray-50 px-4 py-3 sm:flex justify-center space-x-4 sm:px-6">
                     <button
                       type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 sm:ml-3 sm:w-auto"
+                      className="inline-flex w-full justify-center rounded-md bg-white  px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50 ring-1 ring-inset ring-gray-300 sm:ml-3 sm:w-auto"
                       onClick={() => {
-                        setOpen(false);
                         pageNavigator();
+                        
                       }}
                     >
                       Yes
                     </button>
                     <button
                       type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                      className="mt-3 inline-flex w-full justify-center rounded-md bg-cyan-800 px-3 py-2 text-sm font-semibold text-white hover:bg-cyan-700 shadow-sm  sm:mt-0 sm:w-auto"
                       onClick={() => setOpen(false)}
                       ref={cancelButtonRef}
                     >
@@ -194,6 +196,11 @@ const ExampleSidebar = function () {
                 >
                       <Sidebar.Item 
                           icon={HiPencilAlt}
+                          className={
+                            "/admin/baskets/create" === currentPage
+                              ? "bg-gray-100 dark:bg-gray-700"
+                              : ""
+                          }
                       >
                         <Link href="/admin/baskets/create">
                             Create                        
@@ -201,10 +208,28 @@ const ExampleSidebar = function () {
                       </Sidebar.Item>
                       <Sidebar.Item 
                           icon={AiOutlineFolderView}
+                          className={
+                            "/admin/baskets/view" === currentPage
+                              ? "bg-gray-100 dark:bg-gray-700"
+                              : ""
+                          }
                       >
                         {isLinkDisabled 
                           ? ( <button onClick={() => {setOpen(true); setTab(3);}}>View</button> ) 
                           : ( <Link href="/admin/baskets/view">View</Link> )
+                        }
+                      </Sidebar.Item>
+                      <Sidebar.Item 
+                          icon={AiOutlineUserAdd}
+                          className={
+                            "/admin/baskets/" === currentPage
+                              ? "bg-gray-100 dark:bg-gray-700"
+                              : ""
+                          }
+                      >
+                        {isLinkDisabled 
+                          ? ( <button onClick={() => {setOpen(true); setTab(3);}}>View</button> ) 
+                          : ( <Link href="/admin/baskets/customerMapping">Map Basket</Link> )
                         }
                       </Sidebar.Item>
                 </Sidebar.Collapse>
