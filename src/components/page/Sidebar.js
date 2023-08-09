@@ -17,17 +17,21 @@ import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { useRouter } from "next/navigation";
 import { setBasketAmount, setBasketName } from "@/store/basketSlice";
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const ExampleSidebar = function () {
 
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   // redux variable
   const basketState = useSelector((state) => state.event.basketState);
   
-  // local state variables
-  const [currentPage, setCurrentPage] = useState("");
+  // // local state variables
+  // const [currentPage, setCurrentPage] = useState("");
   const [isLinkDisabled, setIsLinkDisabled] = useState(basketState);
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState(0);
@@ -77,10 +81,9 @@ const ExampleSidebar = function () {
     setOpen(false);
   }
 
-  useEffect(() => {
-    const newPage = window.location.pathname;
-    setCurrentPage(newPage);
-  }, [currentPage]);
+  // useEffect(() => {
+  //   setCurrentPage(pathname);
+  // }, [currentPage]);
 
   useEffect(() => {
     setIsLinkDisabled(basketState);
@@ -123,12 +126,11 @@ const ExampleSidebar = function () {
                       </div>
                       <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                         <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                          Not Saved!
+                          Unsaved Basket!
                         </Dialog.Title>
                         <div className="mt-2">
                           <div className="text-sm text-gray-500">
                             <p>Are you sure you want to leave this page?</p> 
-                            <p>All your progress will be unsaved</p>
                           </div>
                         </div>
                       </div>
@@ -169,7 +171,7 @@ const ExampleSidebar = function () {
                 <Sidebar.Item
                   icon={HiChartPie}
                   className={
-                    "/admin/dashboard" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
+                    "/admin/dashboard" === pathname ? "bg-gray-100 dark:bg-gray-700" : ""
                   }
                 >
                   {isLinkDisabled 
@@ -180,7 +182,7 @@ const ExampleSidebar = function () {
                 <Sidebar.Item
                   icon={HiUserGroup}
                   className={
-                    "/admin/customers" === currentPage
+                    "/admin/customers" === pathname
                       ? "bg-gray-100 dark:bg-gray-700"
                       : ""
                   }
@@ -197,7 +199,7 @@ const ExampleSidebar = function () {
                       <Sidebar.Item 
                           icon={HiPencilAlt}
                           className={
-                            "/admin/baskets/create" === currentPage
+                            "/admin/baskets/create" === pathname
                               ? "bg-gray-100 dark:bg-gray-700"
                               : ""
                           }
@@ -209,7 +211,7 @@ const ExampleSidebar = function () {
                       <Sidebar.Item 
                           icon={AiOutlineFolderView}
                           className={
-                            "/admin/baskets/view" === currentPage
+                            "/admin/baskets/view" === pathname
                               ? "bg-gray-100 dark:bg-gray-700"
                               : ""
                           }
@@ -222,14 +224,14 @@ const ExampleSidebar = function () {
                       <Sidebar.Item 
                           icon={AiOutlineUserAdd}
                           className={
-                            "/admin/baskets/" === currentPage
+                            "/admin/baskets/" === pathname
                               ? "bg-gray-100 dark:bg-gray-700"
                               : ""
                           }
                       >
                         {isLinkDisabled 
-                          ? ( <button onClick={() => {setOpen(true); setTab(3);}}>View</button> ) 
-                          : ( <Link href="/admin/baskets/customerMapping">Map Basket</Link> )
+                          ? ( <button onClick={() => {setOpen(true); setTab(3);}}>Map Customer</button> ) 
+                          : ( <Link href="/admin/baskets/customerMapping">Map Customer</Link> )
                         }
                       </Sidebar.Item>
                 </Sidebar.Collapse>

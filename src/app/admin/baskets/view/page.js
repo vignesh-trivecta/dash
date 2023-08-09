@@ -81,7 +81,7 @@ const Customers = () => {
               <tr>
                 <th className='text-left font-medium text-sm p-2' style={{width:'8%'}}>S.No</th>
                 <th className='text-left font-medium text-sm p-2'>Basket Name</th>
-                <th className='text-left font-medium text-sm' style={{width:'12%'}}>Scripts</th>
+                <th className='text-left font-medium text-sm' style={{width:'12%'}}># Scripts</th>
                 <th className='text-left font-medium text-sm'>Investment &#8377;</th>
                 <th className='text-left font-medium text-sm'>Created By</th>
                 <th className='text-center font-medium text-sm'>Created On</th>
@@ -103,8 +103,8 @@ const Customers = () => {
                       <td className='text-left'>
                           <div className='text-sm text-black p-2 ml-2'>{record.totalNoOrders}</div>
                       </td>
-                      <td className='text-right'>
-                          <div className='text-sm text-black p-2 mr-40'>{segregate(record.basketInvAmount)}</div>
+                      <td className='text-center'>
+                          <div className='text-sm text-black p-2 mr-20'>{segregate(record.basketInvAmount)}</div>
                       </td>
                       <td className='text-left'>
                           <div className='text-sm text-black p-2'>{record.createdBy}</div>    
@@ -116,14 +116,16 @@ const Customers = () => {
                           <div className="flex justify-center items-center">
                               <div className="mr-2">
                                 {/* SVG icon for Viewing table */}
-                                <Link href={`/admin/baskets/view/${record.basketName}`}>
-                                    <svg className="w-4 h-4 text-gray-500 hover:text-gray-800 dark:text-white" ariaHidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 12">
-                                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
-                                        <path d="M10 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                                        <path d="M10 13c4.97 0 9-2.686 9-6s-4.03-6-9-6-9 2.686-9 6 4.03 6 9 6Z"/>
-                                        </g>
-                                    </svg>
-                                </Link>
+                                <Tooltip content="View" >
+                                    <Link href={`/admin/baskets/view/${record.basketName}`}>
+                                        <svg className="w-4 h-4 text-gray-500 hover:text-gray-800 dark:text-white" ariaHidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 12">
+                                            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
+                                            <path d="M10 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                                            <path d="M10 13c4.97 0 9-2.686 9-6s-4.03-6-9-6-9 2.686-9 6 4.03 6 9 6Z"/>
+                                            </g>
+                                        </svg>
+                                    </Link>
+                                </Tooltip>
                               </div>
                               {record.createdBy == username 
                                 ? 
@@ -131,20 +133,24 @@ const Customers = () => {
                                         <>
                                             <div className="mr-2">
                                                 {/* SVG icon for updating table */}
-                                                <Link href={`/admin/baskets/view/${record.basketName}/update`} >
-                                                    <svg className="w-4 h-4 text-gray-500 hover:text-gray-800 dark:text-white" ariaHidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                                        <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
-                                                        <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
-                                                    </svg>
-                                                </Link> 
+                                                <Tooltip content="Update" >
+                                                    <Link href={`/admin/baskets/view/${record.basketName}/update`} >
+                                                        <svg className="w-4 h-4 text-gray-500 hover:text-gray-800 dark:text-white" ariaHidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                                            <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                                        </svg>
+                                                    </Link> 
+                                                </Tooltip>
                                             </div>
                                             <div className="mr-2">
-                                                {/* Deleting table */}
-                                                <DeleteBasket 
-                                                    handleFetch={handleFetch} 
-                                                    setHandleFetch={setHandleFetch} 
-                                                    basketName={record.basketName} 
-                                                />
+                                                {/* Delete table */}
+                                                <Tooltip content="Delete" >
+                                                    <DeleteBasket 
+                                                        handleFetch={handleFetch} 
+                                                        setHandleFetch={setHandleFetch} 
+                                                        basketName={record.basketName} 
+                                                    />
+                                                </Tooltip>
                                             </div>
                                         </>
                                     )
@@ -152,7 +158,7 @@ const Customers = () => {
                                 <>
                                     <div className="mr-2">
                                         {/* SVG icon for updating table */}
-                                        <Tooltip content="Denied" >
+                                        <Tooltip content="Update Denied" >
                                             <Link href='#' className='pointer-events-none' >
                                                 <svg className="w-4 h-4 text-gray-500 hover:text-gray-800 dark:text-white" ariaHidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
                                                     <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
@@ -163,7 +169,7 @@ const Customers = () => {
                                     </div>
                                     <div className="mr-2">
                                         {/* SVG icon for deleting table */}
-                                        <Tooltip content="Denied" >
+                                        <Tooltip content="Delete Denied" >
                                             <Link href='#' className='pointer-events-none'>
                                             <svg className="w-4 h-4 text-gray-500 hover:text-red-500 dark:text-white" ariaHidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>

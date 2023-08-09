@@ -44,6 +44,9 @@ const CreateBasket = () => {
   // useEffect for getting records after basket save clicked
   const [saved, setSaved] = useState(false);
   useEffect(() => {
+    setRecords([]);
+    dispatch(setBasketAmount(''));
+    dispatch(setBasketName(''));
     setMessage(msg4);
   }, [saved])
 
@@ -162,7 +165,7 @@ else {
             // Remove commas from the input value before updating state
             const newValue = e.target.value.replace(/,/g, "");
             dispatch(setBasketAmount(newValue));
-          }} className="border border-gray-200 rounded-lg w-44" />
+          }} className="border border-gray-200 rounded-lg w-44 text-right" />
         </div>
 
         {/* Basket Type listbox */}
@@ -175,7 +178,7 @@ else {
       </div>
         <div className="flex flex-col items-left mb-6">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value</p>
-          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
+          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-right" />
         </div>
       </div>  
           

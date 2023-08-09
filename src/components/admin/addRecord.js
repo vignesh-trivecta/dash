@@ -161,7 +161,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
                     {/* Price element */}
                     <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
                         <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                        <input disabled id='price' name="price" value={price} type="number" className='absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
+                        <input disabled id='price' name="price" value={price} type="number" className=' text-right absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
                     </div>
 
                     {/* Exchange element */}
@@ -194,7 +194,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
                             type='number'
                             value={weightage}
                             onChange={handleChange}
-                            className='w-full border border-gray-200 rounded-md'
+                            className='w-full border border-gray-200 rounded-md text-right'
                             autoFocus
                         />
                     </div>
@@ -220,7 +220,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
                     {orderType === "LIMIT" && (   
                         <span className='relative ml-8'>
                             <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                            <input id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className='absolute w-32 rounded-md border border-gray-200' />                                             
+                            <input id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className=' text-right absolute w-32 rounded-md border border-gray-200' />                                             
                         </span>                             
                     )}
 
@@ -228,7 +228,7 @@ const AddRecord = ({ handleFetch, setHandleFetch }) => {
                     {/* Quantity element */}
                     <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
                         <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                        <input disabled id='quantity' name='quantity' value={quantity} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
+                        <input disabled id='quantity' name='quantity' value={quantity} type="string" className=' text-right absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
                     </div>
                 </div>
 

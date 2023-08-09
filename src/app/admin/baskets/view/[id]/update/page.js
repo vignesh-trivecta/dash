@@ -16,24 +16,27 @@ const UpdateBasket = ({ params }) => {
     const msg2 = "Add records to the table";
     const adminId = useSelector((state) => state.user.username);
 
+    
     // local state variables
     const [records, setRecords] = useState([]);
     const [handleFetch, setHandleFetch] = useState(false);
     const [message, setMessage] = useState('');
-    const [investmentVal, setInvestmentVal] = useState(0);
-
+    
     const pathname = usePathname();
-
+    
     // useEffect to fetch the table records
     useEffect( () => {
-            const gettingRecords = async () => {
-            const response = await getSpecificBasket( params.id );
-            setRecords(response);
-            console.log(response)
-        };
-        gettingRecords();
+      const gettingRecords = async () => {
+        const response = await getSpecificBasket( params.id );
+        setRecords(response);
+        console.log(response)
+      };
+      gettingRecords();
     }, []);
-
+    
+    let value = records.map((record) => { return record.basketInvestAmt});
+    console.log(Number(value))
+    const [investmentVal, setInvestmentVal] = useState(Number(value));
       // useEffect for getting records after basket save clicked
   const [saved, setSaved] = useState('');
   useEffect(() => {
@@ -103,7 +106,7 @@ const UpdateBasket = ({ params }) => {
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-left">
                 <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
-                <input type="text" disabled value={params.id} className="border border-gray-200 rounded-lg w-44" />
+                <input type="text" disabled value={params.id} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
               </div>
               <div className='ml-8 mt-2'>
                 <p className='text-xs text-red-500'><div>&nbsp;</div></p>
@@ -115,7 +118,7 @@ const UpdateBasket = ({ params }) => {
             // Remove commas from the input value before updating state
             const newValue = e.target.value.replace(/,/g, "");
             setInvestmentVal(newValue);
-          }} className="border border-gray-200 rounded-lg w-44" />
+          }} className="border border-gray-200 rounded-lg w-44 text-right" />
         </div>
 
         {/* Basket Type listbox */}
@@ -128,7 +131,7 @@ const UpdateBasket = ({ params }) => {
       </div>
         <div className="flex flex-col items-left mb-6">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value</p>
-          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
+          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-right" />
         </div>
       </div>  
 

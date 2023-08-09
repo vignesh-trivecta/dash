@@ -25,7 +25,7 @@ const SubmitBasket = ({ saved, setSaved }) => {
     e.preventDefault();
     const basketRequests = await getRecords(adminName, basketName);
     const response = await submitBasket(adminName, basketName, modelBasket, basketValidity, basketRequests);
-    setPopup(!popup); // Close the MapAlert after saving
+    // setPopup(!popup); // Close the MapAlert after saving
     setSaved(!saved);
   }
 
