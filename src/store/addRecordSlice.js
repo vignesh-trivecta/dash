@@ -10,6 +10,7 @@ const initialState = {
     weightage: null,
     quantity: null,
     price: null,
+    newBasketName: '',
 };
 
 // creating a new slice
@@ -44,9 +45,12 @@ const addRecordSlice = createSlice({
     setPrice: (state, action) => {
       state.price = action.payload;
     },
+    setNewBasketName: (state, action) => {
+      state.newBasketName = action.payload;
+    },
   },
 });
 
-export const { setRecId, setSelectedStock, setInstrumentName, setExchange, setTransType, setOrderType, setWeightage, setQuantity, setPrice } = addRecordSlice.actions;
+export const { setRecId, setSelectedStock, setInstrumentName, setExchange, setTransType, setOrderType, setWeightage, setQuantity, setPrice, setNewBasketName } = addRecordSlice.actions;
 
 export default addRecordSlice.reducer;

@@ -82,7 +82,7 @@ const Customers = () => {
                 <th className='text-left font-medium text-sm p-2' style={{width:'8%'}}>S.No</th>
                 <th className='text-left font-medium text-sm p-2'>Basket Name</th>
                 <th className='text-left font-medium text-sm' style={{width:'12%'}}># Scripts</th>
-                <th className='text-left font-medium text-sm'>Investment &#8377;</th>
+                <th className='text-left font-medium text-sm'>Basket Value &#8377;</th>
                 <th className='text-left font-medium text-sm'>Created By</th>
                 <th className='text-center font-medium text-sm'>Created On</th>
                 <th className='text-center font-medium text-sm'>Actions</th>

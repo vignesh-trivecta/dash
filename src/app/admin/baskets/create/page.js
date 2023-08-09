@@ -160,7 +160,7 @@ else {
             </div>)
         }
         <div className="flex flex-col items-left mb-6">
-          <label className="text-black text-sm dark:text-white">Investment</label>
+          <label className="text-black text-sm dark:text-white">Investment &#8377;</label>
           <input type="text" value={segregate(investmentVal)} onChange={(e) => {
             // Remove commas from the input value before updating state
             const newValue = e.target.value.replace(/,/g, "");
@@ -171,13 +171,13 @@ else {
         {/* Basket Type listbox */}
         <div className="">
           <p className="text-black text-sm dark:text-white mr-2">Transaction Type</p>
-          <select name="transactionType" id="transactionType" className='border border-gray-200 rounded-md w-32'>
+          <select name="transactionType" id="transactionType" className='border border-gray-200 rounded-md w-44'>
             <option value="BUY" selected>BUY</option>
             <option value="SELL">SELL</option>
           </select> 
       </div>
         <div className="flex flex-col items-left mb-6">
-          <p className="text-black text-sm dark:text-white mr-2">Basket Value</p>
+          <p className="text-black text-sm dark:text-white mr-2">Basket Value &#8377;</p>
           <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-right" />
         </div>
       </div>  

@@ -98,7 +98,7 @@ const CustomerMapping = () => {
                         <select
                             name="transactionType"
                             id="transactionType"
-                            className='border border-gray-200 rounded-md w-54 h-10'
+                            className='border border-gray-200 rounded-md w-44'
                             defaultValue={'select'}
                             onChange={(e) => {handleSelection(e.target.value)}}
                         >
@@ -117,14 +117,15 @@ const CustomerMapping = () => {
                     <input type="text" value={segregate(investmentVal)} disabled className="border border-gray-200 bg-gray-50 text-right rounded-lg w-44" />
                 </div>
 
-                <div className="flex flex-col items-left mb-6">
-                    <p className="text-black text-sm dark:text-white mr-2">Basket value &#8377;</p>
-                    <input disabled type="text" value={segregate(475000)} className="border border-gray-200 rounded-lg w-44 text-right bg-gray-50" />
-                </div>
                 {/* Basket Type listbox */}
                 <div className="">
                     <p className="text-black text-sm dark:text-white mr-2">Transaction Type</p>
                     <input disabled type="text" value={'BUY'} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
+                </div>
+
+                <div className="flex flex-col items-left mb-6">
+                    <p className="text-black text-sm dark:text-white mr-2">Basket value &#8377;</p>
+                    <input disabled type="text" value={segregate(200000)} className="border border-gray-200 rounded-lg w-44 text-right bg-gray-50" />
                 </div>
             </div>       
 

@@ -311,7 +311,7 @@ export const cloneBasket = async (basketName, newBasketName, adminId) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/clone", requestOptions);
-        console.log(basketName);
+        console.log(basketName, newBasketName, adminId);
         if(response.ok){
             return true;
         }

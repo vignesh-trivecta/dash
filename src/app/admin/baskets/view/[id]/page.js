@@ -1,21 +1,26 @@
 'use client';
 
-import { deleteBasket, getSpecificBasket } from '@/app/api/basket/route';
+import { cloneBasket, deleteBasket, getSpecificBasket } from '@/app/api/basket/route';
 // import { Dialog, Transition } from '@headlessui/react';
 // import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { segregate } from '@/utils/priceSegregator';
 import Link from 'next/link';
-import React, { useEffect, useState, Fragment, useRef } from 'react'
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { Button, Checkbox, Label, Modal, TextInput } from 'flowbite-react';
 
 const ViewTable = ({ params }) => {
+  
+  const basketName = params.id;
+  let input;
 
   // local state variables
   const [records, setRecords] = useState([]);
   const [open, setOpen] = useState(false);
   const [res, setRes] = useState(false);
+  const [newBasketName, setNewBasketName] = useState('');
+
 
   // modal elements
   const [openModal, setOpenModal] = useState();
@@ -23,6 +28,7 @@ const ViewTable = ({ params }) => {
 
   const adminId = useSelector((state) => state.user.username);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const cancelButtonRef = useRef(null);
 
@@ -35,23 +41,23 @@ const ViewTable = ({ params }) => {
     gettingRecords();
   }, []);
 
-// useEffect to fetch the table records after deletion or when res changes
-useEffect(() => {
-  const gettingRecords = async () => {
-    if (res === 'loading') {
-      // Fetch the records after a brief delay to allow the deletion to complete on the server
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-    const response = await getSpecificBasket(params.id);
-    setRecords(response);
-    console.log(response)
-  };
-  gettingRecords();
-}, [res, params.id]);
+  // useEffect to fetch the table records after deletion or when res changes
+  useEffect(() => {
+    const gettingRecords = async () => {
+      if (res === 'loading') {
+        // Fetch the records after a brief delay to allow the deletion to complete on the server
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      const response = await getSpecificBasket(params.id);
+      setRecords(response);
+      console.log(response)
+    };
+    gettingRecords();
+  }, [res, params.id]);
 
 
-  const handleClone = () => {
-    setOpenModal('form-elements');
+  const handleClone =  () => {
+    props.setOpenModal(undefined);
   }  
 
   // const handleDelete = async (e) => {
@@ -154,11 +160,16 @@ useEffect(() => {
                 <div className="mb-2 block">
                   <Label htmlFor="email" value="New Basket Name" />
                 </div>
-                <TextInput id="email" className='' required />
+                <TextInput id="email" className='' autoFocus
+                onChange={(e) => {
+                  input = e.target.value;
+                  setNewBasketName(e.target.value);
+
+                  }} required />
               </div>
               
               <div className="w-full flex justify-center items-center space-x-4">
-                <Button onClick={() => {}}>Clone</Button>
+                <Button onClick={async() => {let response= await cloneBasket(basketName, newBasketName, adminId); setOpenModal(undefined);}}>Clone</Button>
                 <Button color='gray' onClick={() => {setOpenModal(undefined)}}>Cancel</Button>
               </div>
               
@@ -169,7 +180,7 @@ useEffect(() => {
 
       <div className='flex justify-between'>
         <h1 className='font-bold'>{params.id}</h1>
-        <button className='flex border border-gray-200 p-2 rounded-md hover:bg-gray-50' onClick={handleClone} >
+        <button className='flex border border-gray-200 p-2 rounded-md hover:bg-gray-50' onClick={() => setOpenModal('form-elements')} >
           <svg className="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 18a.969.969 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V9l4-4m-4 5h5m3-4h5V1m5 1v12a.97.97 0 0 1-.933 1H9.933A.97.97 0 0 1 9 14V5l4-4h5.067A.97.97 0 0 1 19 2Z"/>
           </svg>
